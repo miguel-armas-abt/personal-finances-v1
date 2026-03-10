@@ -1,0 +1,20 @@
+participant frontend
+participant personal-finances-v1
+participant mongo-db
+
+frontend->personal-finances-v1: GET /expenses\n?recipient={recipient}\n&category={category}\n&currency={currency}\n&from={from}\n&to={to}\n&encodedCursor={encodedCursor}
+
+personal-finances-v1->personal-finances-v1: get page size from properties
+
+personal-finances-v1->mongo-db: [db.expenses] query expenses by filters
+
+alt is pagination cursor provided
+    personal-finances-v1->personal-finances-v1: decode cursor
+    personal-finances-v1->mongo-db: apply page continuation by cursor
+end
+
+mongo-db-->personal-finances-v1: **return** expenses list
+
+personal-finances-v1->personal-finances-v1: apply pagination
+
+personal-finances-v1-->frontend: 200 OK (expenses + cursor)

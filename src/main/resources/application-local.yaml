@@ -1,0 +1,10 @@
+quarkus:
+  mongodb:
+    connection-string: "mongodb+srv://${MONGODB_USERNAME}:${MONGODB_PASSWORD}@${MONGODB_CLUSTER}/?retryWrites=true&w=majority&appName=Cluster0&authSource=admin"
+    database: personal_finances
+
+configuration:
+  business:
+    expenses:
+      sync:
+        initial-checkpoint-lookback-days: 360

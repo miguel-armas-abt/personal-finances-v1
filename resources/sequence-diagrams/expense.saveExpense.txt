@@ -1,0 +1,10 @@
+participant frontend
+participant personal-finances-v1
+participant mongo-db
+
+frontend->personal-finances-v1: POST /expenses (save request)
+
+personal-finances-v1->mongo-db: [db.expenses] persist expense
+mongo-db-->personal-finances-v1: **return** created expense
+
+personal-finances-v1-->frontend: 201 Created (expenseId)

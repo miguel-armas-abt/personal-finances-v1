@@ -1,0 +1,28 @@
+package io.github.miguelarmasabt.commons.dto.params;
+
+import io.github.miguelarmasabt.rest.server.DefaultHeaders;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.ws.rs.HeaderParam;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Setter
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
+public class AppHeaders extends DefaultHeaders {
+
+  public static final String USER_CODE = "user-code";
+
+  @HeaderParam("Authorization")
+  @NotBlank
+  String authorization;
+
+  @HeaderParam(USER_CODE)
+  @Email
+  @NotBlank
+  String userCode;
+}

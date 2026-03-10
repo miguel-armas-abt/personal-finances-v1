@@ -1,0 +1,37 @@
+participant frontend
+participant personal-finances-v1
+participant google-oidc
+participant mongo-db
+
+frontend->personal-finances-v1: POST /auth/google/sign-in (idToken)
+
+personal-finances-v1->google-oidc: verify Google ID token
+google-oidc-->personal-finances-v1: **return** Google identity
+
+personal-finances-v1->mongo-db: [db.users] find user by googleSub
+mongo-db-->personal-finances-v1: **return** user
+
+alt exists user by googleSub
+    personal-finances-v1->mongo-db: [db.users] update Google profile if changed
+    mongo-db-->personal-finances-v1: **return** user
+else not exists user by googleSub
+    personal-finances-v1->mongo-db: [db.users] find user by email
+    mongo-db-->personal-finances-v1: **return** user
+
+    alt exists user by email
+        personal-finances-v1-->frontend: 409 Conflict
+    else email is available
+        personal-finances-v1->mongo-db: [db.users] persist Google user
+        mongo-db-->personal-finances-v1: **return** created user
+    end
+end
+
+alt user is disabled
+    personal-finances-v1-->frontend: 401 Unauthorized
+else user is enabled
+    personal-finances-v1->personal-finances-v1: generate internal access token
+    personal-finances-v1->mongo-db: [db.refresh_tokens] persist refresh token hash
+    mongo-db-->personal-finances-v1: **return** refresh token record
+
+    personal-finances-v1-->frontend: 200 OK (accessToken, refreshToken, expiresIn, user)
+end
