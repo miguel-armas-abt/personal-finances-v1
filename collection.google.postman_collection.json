@@ -1,0 +1,220 @@
+{
+  "info": {
+    "_postman_id": "d93a0013-4cca-4e14-ae71-061892448786",
+    "name": "Google",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "13773998"
+  },
+  "item": [
+    {
+      "name": "getMessages",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{bearer-token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "https://gmail.googleapis.com/gmail/v1/users/me/messages?maxResults=10&fields=messages%2Fid%2CnextPageToken&q=%28from%3Aservicioalcliente%40netinterbank.com.pe+subject%3A%22Constancia+de+Pago+Plin%22%29+after%3A2025%2F07%2F01",
+          "protocol": "https",
+          "host": [
+            "gmail",
+            "googleapis",
+            "com"
+          ],
+          "path": [
+            "gmail",
+            "v1",
+            "users",
+            "me",
+            "messages"
+          ],
+          "query": [
+            {
+              "key": "q",
+              "value": "%28%28from%3Aprocesos%40bbva.com.pe+subject%3A%22Constancia+de+operaci%C3%B3n+transferencia+PLIN%22%29+OR+%28from%3Anotificaciones%40notificacionesbcp.com.pe+subject%3A%22Realizaste+un+consumo+con+tu+Tarjeta+de+Cr%C3%A9dito+BCP+-+Servicio+de+Notificaciones+BCP%22%29+OR+%28from%3Aprocesos%40bbva.com.pe+subject%3A%22Has+realizado+un+consumo+con+tu+tarjeta+BBVA%22%29+OR+%28from%3Aservicioalcliente%40netinterbank.com.pe+subject%3A%22Constancia+de+Pago+Plin%22%29+OR+%28from%3Anotificaciones%40notificacionesbcp.com.pe+subject%3A%22Realizaste+un+consumo+con+tu+Tarjeta+de+D%C3%A9bito+BCP+-+Servicio+de+Notificaciones+BCP%22%29+OR+%28from%3Aprocesos%40bbva.com.pe+subject%3A%22Constancia+de+pago+a+comercios+con+QR%22%29+OR+%28from%3Anotificaciones%40yape.pe+subject%3A%22Pago+exitoso%22%29+OR+%28from%3Aprocesos%40bbva.com.pe+subject%3A%22BBVA+-+Constancia+Pago+de+servicios%22%29+OR+%28from%3Anoreply%40yape.pe+subject%3A%22Tu+yapeo+de+servicio+ha+sido+confirmado%22%29%29+after%3A2026%2F03%2F08",
+              "disabled": true
+            },
+            {
+              "key": "maxResults",
+              "value": "10"
+            },
+            {
+              "key": "fields",
+              "value": "messages%2Fid%2CnextPageToken"
+            },
+            {
+              "key": "q",
+              "value": "%28from%3Aservicioalcliente%40netinterbank.com.pe+subject%3A%22Constancia+de+Pago+Plin%22%29+after%3A2025%2F07%2F01"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "getEmailContent",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{bearer-token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "https://gmail.googleapis.com/gmail/v1/users/me/messages/:messageId?format=full",
+          "protocol": "https",
+          "host": [
+            "gmail",
+            "googleapis",
+            "com"
+          ],
+          "path": [
+            "gmail",
+            "v1",
+            "users",
+            "me",
+            "messages",
+            ":messageId"
+          ],
+          "query": [
+            {
+              "key": "format",
+              "value": "full"
+            },
+            {
+              "key": "fields",
+              "value": "id,snippet,payload(headers(name,value),parts(mimeType,parts(headers(name,value),body(data)))),internalDate",
+              "disabled": true
+            }
+          ],
+          "variable": [
+            {
+              "key": "messageId",
+              "value": "19bb4ee6497112c4"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "sendEmail",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "ya29.a0ATkoCc6PeuQQ8jhlkB2-I4K5LfppCjJVEPbcN05_ieEzZTJIyroVdbDiNX9P5k9i7HdU4QCsbCrcScXJwxihARH3ErwamRTjYf65DIG8D5ghxPgXucXcyeST2-H20rCgqC3dPtKyrwy0_29Y9F9YqZdUZyujWzzeaX-p19RK43IiKbgR3rsgR_vrjSJMI6yZvZpZse0aCgYKAYoSARYSFQHGX2Mi-TNvvWFtxHyDbkkNDpq9Ng0206",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"raw\": \"SG9sYQ==\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://gmail.googleapis.com/gmail/v1/users/me/messages/send",
+          "protocol": "https",
+          "host": [
+            "gmail",
+            "googleapis",
+            "com"
+          ],
+          "path": [
+            "gmail",
+            "v1",
+            "users",
+            "me",
+            "messages",
+            "send"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "https://www.googleapis.com/auth/gmail.modify",
+      "request": {
+        "auth": {
+          "type": "oauth2",
+          "oauth2": [
+            {
+              "key": "scope",
+              "value": "https://www.googleapis.com/auth/gmail.modify",
+              "type": "string"
+            },
+            {
+              "key": "clientSecret",
+              "value": "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",
+              "type": "string"
+            },
+            {
+              "key": "clientId",
+              "value": "688021661176-ddni3a1g9hb25a5gljrri97asii870r5.apps.googleusercontent.com",
+              "type": "string"
+            },
+            {
+              "key": "accessTokenUrl",
+              "value": "https://oauth2.googleapis.com/token",
+              "type": "string"
+            },
+            {
+              "key": "authUrl",
+              "value": "https://accounts.google.com/o/oauth2/v2/auth",
+              "type": "string"
+            },
+            {
+              "key": "redirect_uri",
+              "value": "https://oauth.pstmn.io/v1/callback",
+              "type": "string"
+            },
+            {
+              "key": "addTokenTo",
+              "value": "header",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "https://www.googleapis.com/auth/gmail.modify",
+          "protocol": "https",
+          "host": [
+            "www",
+            "googleapis",
+            "com"
+          ],
+          "path": [
+            "auth",
+            "gmail.modify"
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}

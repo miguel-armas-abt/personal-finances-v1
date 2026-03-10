@@ -1,0 +1,115 @@
+quarkus:
+  application:
+    name: personal-management-v1
+  http:
+    port: ${SERVER_PORT:8080}
+  log:
+    category:
+      "org.mongodb.driver.cluster":
+        level: WARN
+    console:
+      enable: true
+      json:
+        pretty-print: false
+  jackson:
+    serialization-inclusion: non_null
+
+  mongodb:
+    connection-string: "mongodb+srv://miguelarmasabt:l21m01j16M01L13@cluster0.t2pidzg.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0&authSource=admin"
+    database: personalManagement
+
+  rest-client:
+    gmail:
+      url: ${configuration.rest-clients.gmail.request.endpoint}
+      verify-host: false
+    exchange-rate:
+      url: ${configuration.rest-clients.exchange-rate.request.endpoint}
+      verify-host: false
+
+configuration:
+  error-messages:
+    Default: No hemos podido realizar tu operación. Estamos trabajando para solucionar el inconveniente.
+
+  rest-clients:
+    gmail:
+      request:
+        endpoint: ${GMAIL_ENDPOINT}
+        headers:
+          provided:
+            Content-Type: application/json
+          forwarded:
+            Authorization: Authorization
+          auto-generated:
+            timestamp: TIMESTAMP
+          tracing:
+            traceParent: TRACE_PARENT
+      performance:
+        timeout: GOOD
+        concurrency: MEDIUM
+
+    exchange-rate:
+      request:
+        endpoint: ${EXCHANGE_RATE_ENDPOINT}
+        headers:
+          provided:
+            Content-Type: application/json
+          auto-generated:
+            timestamp: TIMESTAMP
+          tracing:
+            traceParent: TRACE_PARENT
+      performance:
+        timeout: GOOD
+        concurrency: MEDIUM
+
+  features:
+    gmail-messages:
+      page-size: 10
+      fields: 'messages/id,nextPageToken'
+    gmail-message-content:
+      format: full
+
+    search-criteria:
+      limit: 20
+
+    csv:
+      imports:
+        batch-size: 500
+      exports:
+        rows-per-chunk: 250
+
+    bank-receipts:
+      "BBVA_DEBIT_CARD":
+        from: procesos@bbva.com.pe
+        subject: "Has realizado un consumo con tu tarjeta BBVA"
+
+      "BBVA_PLIN":
+        from: procesos@bbva.com.pe
+        subject: "Constancia de operación transferencia PLIN"
+
+      "BBVA_PLIN_MERCHANT_QR":
+        from: procesos@bbva.com.pe
+        subject: "BBVA - Constancia de pago a comercios con QR"
+
+      "BBVA_SERVICE_PAYMENT":
+        from: procesos@bbva.com.pe
+        subject: "BBVA - Constancia Pago de servicios"
+
+      "IBK_PLIN":
+        from: servicioalcliente@netinterbank.com.pe
+        subject: "Constancia de Pago Plin"
+
+#      "BCP_DEBIT_CARD":
+#        from: notificaciones@notificacionesbcp.com.pe
+#        subject: "Realizaste un consumo con tu Tarjeta de Débito BCP - Servicio de Notificaciones BCP"
+#
+#      "BCP_CREDIT_CARD":
+#        from: notificaciones@notificacionesbcp.com.pe
+#        subject: "Realizaste un consumo con tu Tarjeta de Crédito BCP - Servicio de Notificaciones BCP"
+#
+#      "BCP_YAPE_SERVICE":
+#        from: noreply@yape.pe
+#        subject: "Tu yapeo de servicio ha sido confirmado"
+#
+#      "BCP_YAPE":
+#        from: notificaciones@yape.pe
+#        subject: "Pago exitoso"

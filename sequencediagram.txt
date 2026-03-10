@@ -1,0 +1,32 @@
+participant frontend
+participant product-delivery-v1
+participant customer-search
+participant delivery-requests
+participant delivery-availability
+participant delivery-coordination
+
+frontend->product-delivery-v1: /contact-data
+par
+    product-delivery-v1->customer-search: /contact-data
+    product-delivery-v1->delivery-requests: /pending-order
+end
+product-delivery-v1-->frontend: return contact data
+
+frontend->product-delivery-v1: /available-dates
+product-delivery-v1->delivery-availability: /available-dates
+product-delivery-v1-->frontend: availableDates
+
+frontend->product-delivery-v1: /reserve
+product-delivery-v1->delivery-coordination: /reserve
+
+alt fecha disponible
+    delivery-coordination-->product-delivery-v1: {status: success}
+    product-delivery-v1-->frontend: {reservation confirmed}
+else fecha no disponible
+    delivery-coordination-->product-delivery-v1: {status: failed, availableDates}
+    product-delivery-v1-->frontend: {availableDates}
+    frontend->product-delivery-v1: /retry
+    product-delivery-v1->delivery-coordination: /reserve
+end
+frontend->product-delivery-v1: /coordinate
+        product-delivery-v1->delivery-coordination: /coordinate

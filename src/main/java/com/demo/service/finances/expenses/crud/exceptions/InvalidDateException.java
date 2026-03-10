@@ -1,0 +1,18 @@
+package com.demo.service.finances.expenses.crud.exceptions;
+
+import com.demo.commons.errors.exceptions.GenericException;
+
+import static jakarta.ws.rs.core.Response.Status.BAD_REQUEST;
+
+public class InvalidDateException extends GenericException {
+
+  public static final String ERROR_CODE = "00.00.05";
+
+  public InvalidDateException(String date) {
+    super(
+        ERROR_CODE,
+        "The date must be in the format 'dd-MM-yyyy' or earlier than now: " + date,
+        BAD_REQUEST
+    );
+  }
+}
