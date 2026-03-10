@@ -1,0 +1,10 @@
+{
+  "date": "2026-07-10T15:30:00Z",
+  "detail": {
+    "category": "Food",
+    "comments": "Latte",
+    "recipient": "Coffee Shop"
+  },
+  "currency": "PEN",
+  "amount": 25.50
+}

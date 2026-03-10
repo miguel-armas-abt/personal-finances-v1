@@ -1,0 +1,21 @@
+participant frontend
+participant personal-finances-v1
+participant mongo-db
+participant exchange-rate
+
+frontend->personal-finances-v1: GET /expenses/categories
+
+personal-finances-v1->mongo-db: [db.expense_categories] find categories
+mongo-db-->personal-finances-v1: **return** categories
+
+personal-finances-v1->mongo-db: [db.expenses] get current month totals by category
+mongo-db-->personal-finances-v1: **return** totals by category
+
+personal-finances-v1->exchange-rate: GET /rate/{base}/{quote}
+exchange-rate-->personal-finances-v1: **return** exchange rate
+
+personal-finances-v1->personal-finances-v1: resolve totals in calculation currency
+
+personal-finances-v1->personal-finances-v1: determine if the category amount was exceeded
+
+personal-finances-v1-->frontend: 200 OK (categories)

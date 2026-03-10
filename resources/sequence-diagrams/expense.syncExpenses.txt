@@ -1,0 +1,56 @@
+participant frontend
+participant personal-finances-v1
+participant mongo-db
+participant gmail
+
+frontend->>personal-finances-v1: POST /expenses/sync
+
+personal-finances-v1->>mongo-db: [db.sync_checkpoints] find or persist sync checkpoint
+mongo-db-->>personal-finances-v1: **return** sync checkpoint
+
+personal-finances-v1->>mongo-db: [db.bank_receipt_templates] find enabled bank receipt templates
+mongo-db-->>personal-finances-v1: **return** enabled templates
+
+alt not exists enabled templates
+    personal-finances-v1-->>frontend: 204 No Content
+else exists enabled templates
+    personal-finances-v1->>personal-finances-v1: build Gmail query based on **enabled templates** and **checkpoint date**
+
+    personal-finances-v1->>mongo-db: [db.expense_categories] find user categories
+    mongo-db-->>personal-finances-v1: **return** categories
+
+    personal-finances-v1->>gmail: GET /users/me/messages
+    gmail-->>personal-finances-v1: **return** Gmail message IDs
+
+    personal-finances-v1->>mongo-db: [db.expenses] find existing Gmail message IDs
+    mongo-db-->>personal-finances-v1: **return** existing Gmail message IDs
+
+    personal-finances-v1->>personal-finances-v1: filter only Gmail message IDs not existing in **db.expenses**
+
+    alt not exists pending Gmail message IDs
+        personal-finances-v1-->>frontend: 204 No Content
+    else exists pending Gmail message IDs
+        loop for each pending Gmail message ID
+            personal-finances-v1->>gmail: GET /users/me/messages/{messageId}
+            gmail-->>personal-finances-v1: **return** Gmail message content
+
+            personal-finances-v1->>personal-finances-v1: extract expense from Gmail content using **enabled templates**
+
+            personal-finances-v1->>personal-finances-v1: resolve expense category using **user categories**
+        end
+
+        personal-finances-v1->>personal-finances-v1: filter only expenses after **checkpoint date**
+
+        alt exists new expenses
+            personal-finances-v1->>mongo-db: [db.expenses] persist extracted expenses
+            mongo-db-->>personal-finances-v1: **return** saved expenses
+
+            personal-finances-v1->>mongo-db: [db.sync_checkpoints] update checkpoint with newest Gmail message date
+            mongo-db-->>personal-finances-v1: **return** updated checkpoint
+
+            personal-finances-v1-->>frontend: 200 OK
+        else not exists new expenses
+            personal-finances-v1-->>frontend: 204 No Content
+        end
+    end
+end

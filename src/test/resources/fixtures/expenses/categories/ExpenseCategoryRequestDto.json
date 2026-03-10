@@ -1,0 +1,25 @@
+{
+  "currency": "PEN",
+  "categories": [
+    {
+      "name": "Food",
+      "limit": 100.00,
+      "recipientPatterns": [
+        {
+          "code": "CONTAINS",
+          "value": "Coffee"
+        }
+      ]
+    },
+    {
+      "name": "Transport",
+      "limit": 50.00,
+      "recipientPatterns": [
+        {
+          "code": "START_WITH",
+          "value": "Taxi"
+        }
+      ]
+    }
+  ]
+}

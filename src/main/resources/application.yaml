@@ -1,0 +1,128 @@
+info:
+  group-id: io.github.miguelarmasabt
+  commons-package: ${info.group-id}.commons
+  main-package: ${info.group-id}.personal.finances
+  rest-client:
+    register-client-headers: '@org.eclipse.microprofile.rest.client.annotation.RegisterClientHeaders'
+
+quarkus:
+  locales: en-US,es-PE
+  default-locale: en-US
+  application:
+    name: personal-finances-v1
+  http:
+    port: ${SERVER_PORT:8080}
+    root-path: /poc/personal-finances/v1
+    non-application-root-path: q
+  log:
+    category:
+      "org.mongodb.driver.cluster":
+        level: WARN
+    console:
+      json:
+        pretty-print: false
+  jackson:
+    serialization-inclusion: non_null
+
+  openapi:
+    generator:
+      server:
+        use: apicurio
+        spec: openapi.yaml
+        input-base-dir: src/main/resources/META-INF
+        base-package: ${info.main-package}.expenses.rest.server
+        use-reactive: false
+        use-bean-validation: true
+        skip-if-unchanged: false
+
+  openapi-generator:
+    codegen:
+      spec:
+        gmail_yaml:
+          base-package: ${info.commons-package}.repository.google
+          config-key: gmail
+          api-name-suffix: Repository
+          mutiny: true
+          serializable-model: true
+          use-bean-validation: false
+          enable-security-generation: false
+          additional-api-type-annotations: '${info.rest-client.register-client-headers}(${info.commons-package}.repository.google.headers.GmailHeadersFactory.class)'
+
+        exchange_rate_yaml:
+          base-package: ${info.commons-package}.repository.exchange.rate
+          config-key: exchange-rate
+          api-name-suffix: Repository
+          mutiny: true
+          serializable-model: true
+          use-bean-validation: false
+          enable-security-generation: false
+
+  rest-client:
+    logging:
+      scope: request-response
+      body-limit: 4096
+
+    gmail:
+      url: ${GMAIL_ENDPOINT}
+      verify-host: false
+      connect-timeout: 1500
+      read-timeout: 15000
+      headers:
+        Content-Type: application/json
+      params:
+        messages:
+          page-size: 200
+          fields: 'messages/id,nextPageToken'
+        message-content:
+          format: full
+
+    exchange-rate:
+      url: ${EXCHANGE_RATE_ENDPOINT}
+      verify-host: false
+      connect-timeout: 1500
+      read-timeout: 15000
+      headers:
+        Content-Type: application/json
+
+mp:
+  jwt:
+    verify:
+      issuer: ${quarkus.application.name}
+      publickey:
+        location: publicKey.pem
+
+smallrye:
+  jwt:
+    sign:
+      key:
+        location: privateKey.pem
+    new-token:
+      issuer: ${quarkus.application.name}
+      lifespan: 1800
+
+org:
+  eclipse:
+    microprofile:
+      rest:
+        client:
+          propagateHeaders: trace-parent,caller-name,request-date
+
+configuration:
+#  project-type: BACKEND_FOR_FRONTEND
+
+  technical:
+    auth:
+      refresh-token:
+        lifespan-days: 30
+
+    google:
+      open-id:
+        client-id: ${GOOGLE_CLIENT_ID}
+
+  business:
+    expenses:
+      sync:
+        initial-checkpoint-lookback-days: 45
+
+      search-criteria:
+        page-size: 20
