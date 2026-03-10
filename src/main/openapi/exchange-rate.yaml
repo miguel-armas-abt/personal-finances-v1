@@ -1,0 +1,155 @@
+openapi: 3.0.3
+
+info:
+  title: Exchange Rate API
+  description: |
+    Cliente OpenAPI para consumir los tipos de cambio actuales e históricos publicados por los bancos centrales.
+  version: v2
+
+servers:
+  - url: https://api.frankfurter.dev/v2
+
+tags:
+  - name: ExchangeRate
+
+paths:
+  /rate/{base}/{quote}:
+    get:
+      tags:
+        - ExchangeRate
+      operationId: getExchangeRate
+      summary: Obtener tipo de cambio por par de divisas
+      description: |
+        Obtiene el tipo de cambio más reciente disponible para un par de divisas.
+
+        La divisa `base` representa la moneda de origen y la divisa `quote`
+        representa la moneda destino.
+      parameters:
+        - $ref: '#/components/parameters/BaseCurrencyPath'
+        - $ref: '#/components/parameters/QuoteCurrencyPath'
+      responses:
+        '200':
+          $ref: '#/components/responses/ExchangeRateOk'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+
+components:
+  parameters:
+    BaseCurrencyPath:
+      name: base
+      in: path
+      required: true
+      description: Código ISO 4217 de la divisa base.
+      schema:
+        $ref: '#/components/schemas/CurrencyCodeSchema'
+
+    QuoteCurrencyPath:
+      name: quote
+      in: path
+      required: true
+      description: Código ISO 4217 de la divisa destino.
+      schema:
+        $ref: '#/components/schemas/CurrencyCodeSchema'
+
+  responses:
+    ExchangeRateOk:
+      description: Tipo de cambio obtenido correctamente.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ExchangeRateResponseWrapper'
+          examples:
+            eurToUsd:
+              summary: Tipo de cambio de EUR a USD
+              value:
+                date: '2026-03-25'
+                base: EUR
+                quote: USD
+                rate: 1.1568
+            usdToPen:
+              summary: Tipo de cambio de USD a PEN
+              value:
+                date: '2026-03-25'
+                base: USD
+                quote: PEN
+                rate: 3.7254
+
+    BadRequestError:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ExchangeRateErrorResponse'
+          example:
+            status: 400
+            message: 'invalid request'
+
+    NotFoundError:
+      description: Not Found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ExchangeRateErrorResponse'
+          example:
+            status: 404
+            message: 'Could not find currency ABC'
+
+  schemas:
+    ExchangeRateResponseWrapper:
+      type: object
+      description: Respuesta con el tipo de cambio correspondiente a un par de divisas.
+      required:
+        - date
+        - base
+        - quote
+        - rate
+      properties:
+        date:
+          $ref: '#/components/schemas/ExchangeRateDateSchema'
+        base:
+          $ref: '#/components/schemas/CurrencyCodeSchema'
+        quote:
+          $ref: '#/components/schemas/CurrencyCodeSchema'
+        rate:
+          $ref: '#/components/schemas/ExchangeRateValueSchema'
+
+    ExchangeRateErrorResponse:
+      type: object
+      description: Respuesta de error retornada por Frankfurter.
+      required:
+        - status
+        - message
+      properties:
+        status:
+          type: integer
+          format: int32
+          description: Código HTTP asociado al error.
+          example: 400
+        message:
+          type: string
+          description: Mensaje asociado al error.
+          example: 'Invalid currency: PXEN'
+
+    CurrencyCodeSchema:
+      type: string
+      description: Código de divisa bajo el estándar ISO 4217.
+      minLength: 3
+      maxLength: 3
+      pattern: '^[A-Z]{3}$'
+      example: USD
+
+    ExchangeRateDateSchema:
+      type: string
+      format: date
+      description: Fecha correspondiente al tipo de cambio retornado.
+      example: '2026-03-25'
+
+    ExchangeRateValueSchema:
+      type: number
+      format: decimal
+      description: Valor numérico del tipo de cambio.
+      minimum: 0
+      exclusiveMinimum: true
+      example: 1.1568

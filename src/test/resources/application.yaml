@@ -1,0 +1,11 @@
+quarkus:
+  mongodb:
+    database: personal_finances_test
+    devservices:
+      enabled: true
+
+configuration:
+  technical:
+    google:
+      open-id:
+        client-id: dummy.apps.googleusercontent.com

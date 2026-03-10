@@ -1,0 +1,943 @@
+{
+  "info": {
+    "_postman_id": "d4ce288f-f7b5-41d5-89e5-e822a6165a9e",
+    "name": "personal-finances-v1",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "13773998"
+  },
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "getAccessTokenBasedOnOpenIdConnect",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "trace-parent",
+                "value": "{{traceParent}}",
+                "type": "text"
+              },
+              {
+                "key": "caller-name",
+                "value": "WEB",
+                "type": "text"
+              },
+              {
+                "key": "Accept-Language",
+                "value": "es",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"idToken\": \"eyJhbGciOiJSUzI1NiIsImtpZCI6ImQxMjk3OGJhNGMyOWVmMTE1NGEzNGU0ODcwYzdhM2E1MWQyNmRmMTAiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL2FjY291bnRzLmdvb2dsZS5jb20iLCJhenAiOiI2ODgwMjE2NjExNzYtZGRuaTNhMWc5aGIyNWE1Z2xqcnJpOTdhc2lpODcwcjUuYXBwcy5nb29nbGV1c2VyY29udGVudC5jb20iLCJhdWQiOiI2ODgwMjE2NjExNzYtZGRuaTNhMWc5aGIyNWE1Z2xqcnJpOTdhc2lpODcwcjUuYXBwcy5nb29nbGV1c2VyY29udGVudC5jb20iLCJzdWIiOiIxMDYxMTQ0MTA2ODc5MzIxMTU1MTEiLCJlbWFpbCI6Im1pZ3VlbC5hcm1hcy5hYnRAZ21haWwuY29tIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsImF0X2hhc2giOiJuYnM3eXczQTZQUTllTk1YckpxOHpnIiwibmFtZSI6Ik1pZ3VlbCBBcm1hcyBBYnQiLCJwaWN0dXJlIjoiaHR0cHM6Ly9saDMuZ29vZ2xldXNlcmNvbnRlbnQuY29tL2EvQUNnOG9jS2hKQmNONG9oQ1pDZlZJQnVWalFiNDBYaGxHcW9XNmlMXzFRMXFNWUM3QVByckFSTWhyQT1zOTYtYyIsImdpdmVuX25hbWUiOiJNaWd1ZWwiLCJmYW1pbHlfbmFtZSI6IkFybWFzIEFidCIsImlhdCI6MTc4MjUyOTgzNywiZXhwIjoxNzgyNTMzNDM3fQ.b9ecbqwLlCjin0KBV_wpNTLiVqbEGEo_mZVdD4-csMvM211hQ9oJBt1tMvzFFfN9V0p5JVeqqfNES5g-U5HP2iKasTvc6vaKerDAo68heCJw2w_wPE-WdlQhJHMt_LeM7Usk16MR8YKPwyrG1IYyl0y0dwmJi2-NYXLB7BZYxoLGALqHQacdHnjmWcVlWzhj5efeq5eRpD2cfGrk21q_1SPPpbXBhn-U6-fYlW5gVJD1zvWypIHsQ0SqtMfr-QsnnvAP1SMiowRaZV87esTh44Oilm_eyDN_KJK6dVnCyNl3OV8_5uaCASsGFJfNYJe3x5-YjBKA_Tv3UQJdl15M8w\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{backend-host}}/poc/personal-finances/v1/auth/openid-connect/token",
+              "host": [
+                "{{backend-host}}"
+              ],
+              "path": [
+                "poc",
+                "personal-finances",
+                "v1",
+                "auth",
+                "openid-connect",
+                "token"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Expense",
+      "item": [
+        {
+          "name": "searchExpense",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "trace-parent",
+                "value": "{{traceParent}}",
+                "type": "text"
+              },
+              {
+                "key": "caller-name",
+                "value": "WEB",
+                "type": "text"
+              },
+              {
+                "key": "user-code",
+                "value": "{{user-code}}",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{bearer-token}}",
+                "type": "text"
+              },
+              {
+                "key": "Accept-Language",
+                "value": "es",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{backend-host}}/poc/personal-finances/v1/expenses",
+              "host": [
+                "{{backend-host}}"
+              ],
+              "path": [
+                "poc",
+                "personal-finances",
+                "v1",
+                "expenses"
+              ],
+              "query": [
+                {
+                  "key": "recipient",
+                  "value": "Karla",
+                  "disabled": true
+                },
+                {
+                  "key": "category",
+                  "value": "PAREJA",
+                  "disabled": true
+                },
+                {
+                  "key": "currency",
+                  "value": "PEN",
+                  "disabled": true
+                },
+                {
+                  "key": "from",
+                  "value": "2026-02-22T20:25:00Z",
+                  "disabled": true
+                },
+                {
+                  "key": "to",
+                  "value": "2026-02-24T20:25:00Z",
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "saveExpense",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "trace-parent",
+                "value": "{{traceParent}}",
+                "type": "text"
+              },
+              {
+                "key": "caller-name",
+                "value": "WEB",
+                "type": "text"
+              },
+              {
+                "key": "user-code",
+                "value": "{{user-code}}",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{bearer-token}}",
+                "type": "text"
+              },
+              {
+                "key": "Accept-Language",
+                "value": "es",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"date\": \"2026-03-28T20:25:00Z\",\r\n    \"currency\": \"PEN\",\r\n    \"amount\": \"25.5\",\r\n    \"detail\": {\r\n        \"category\": \"TAXI\",\r\n        \"comments\": \"INDRIVE - Musa -> Viñas\",\r\n        \"recipient\": \"Carlos Alvarez\",\r\n        \"source\": \"BBVA_PLIN\"\r\n    }\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{backend-host}}/poc/personal-finances/v1/expenses",
+              "host": [
+                "{{backend-host}}"
+              ],
+              "path": [
+                "poc",
+                "personal-finances",
+                "v1",
+                "expenses"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "updateExpense",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "trace-parent",
+                "value": "{{traceParent}}",
+                "type": "text"
+              },
+              {
+                "key": "caller-name",
+                "value": "WEB",
+                "type": "text"
+              },
+              {
+                "key": "user-code",
+                "value": "{{user-code}}",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{bearer-token}}",
+                "type": "text"
+              },
+              {
+                "key": "Accept-Language",
+                "value": "es",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"date\": \"2026-03-28T20:25:00Z\",\r\n    \"currency\": \"USD\",\r\n    \"amount\": 55.2,\r\n    \"detail\": {\r\n        \"category\": \"PAREJA\",\r\n        \"comments\": \"INDRIVE - Musa -> Viñas\",\r\n        \"recipient\": \"Franco Vidal\"\r\n    }\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{backend-host}}/poc/personal-finances/v1/expenses/69c9cd28ffa3570bb0bb8637",
+              "host": [
+                "{{backend-host}}"
+              ],
+              "path": [
+                "poc",
+                "personal-finances",
+                "v1",
+                "expenses",
+                "69c9cd28ffa3570bb0bb8637"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "deleteExpense",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "trace-parent",
+                "value": "{{traceParent}}",
+                "type": "text"
+              },
+              {
+                "key": "caller-name",
+                "value": "WEB",
+                "type": "text"
+              },
+              {
+                "key": "user-code",
+                "value": "{{user-code}}",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{bearer-token}}",
+                "type": "text"
+              },
+              {
+                "key": "Accept-Language",
+                "value": "es",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{backend-host}}/poc/personal-finances/v1/expenses/69c35d97e127a85424eb0818",
+              "host": [
+                "{{backend-host}}"
+              ],
+              "path": [
+                "poc",
+                "personal-finances",
+                "v1",
+                "expenses",
+                "69c35d97e127a85424eb0818"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "syncExpenses",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "trace-parent",
+                "value": "{{traceParent}}",
+                "type": "text"
+              },
+              {
+                "key": "caller-name",
+                "value": "WEB",
+                "type": "text"
+              },
+              {
+                "key": "user-code",
+                "value": "{{user-code}}",
+                "type": "text"
+              },
+              {
+                "key": "gmail-access-token",
+                "value": "{{gmail-token}}",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{bearer-token}}",
+                "type": "text",
+                "disabled": true
+              },
+              {
+                "key": "Accept-Language",
+                "value": "es",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{backend-host}}/poc/personal-finances/v1/expenses/sync",
+              "host": [
+                "{{backend-host}}"
+              ],
+              "path": [
+                "poc",
+                "personal-finances",
+                "v1",
+                "expenses",
+                "sync"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Expense CSV",
+      "item": [
+        {
+          "name": "importExpenses",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "trace-parent",
+                "value": "{{traceParent}}",
+                "type": "text"
+              },
+              {
+                "key": "caller-name",
+                "value": "WEB",
+                "type": "text"
+              },
+              {
+                "key": "user-code",
+                "value": "{{user-code}}",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{bearer-token}}",
+                "type": "text"
+              },
+              {
+                "key": "Accept-Language",
+                "value": "es",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "uuid": "2c899f61-d6a6-4712-b959-4f8481790ab8",
+                  "src": "/C:/Users/User/Downloads/expenses-29-03-2026.csv"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{backend-host}}/poc/personal-finances/v1/expenses/csv/import",
+              "host": [
+                "{{backend-host}}"
+              ],
+              "path": [
+                "poc",
+                "personal-finances",
+                "v1",
+                "expenses",
+                "csv",
+                "import"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "exportExpenses",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "trace-parent",
+                "value": "{{traceParent}}",
+                "type": "text"
+              },
+              {
+                "key": "caller-name",
+                "value": "WEB",
+                "type": "text"
+              },
+              {
+                "key": "Accept",
+                "value": "text/csv",
+                "type": "text"
+              },
+              {
+                "key": "user-code",
+                "value": "{{user-code}}",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{bearer-token}}",
+                "type": "text"
+              },
+              {
+                "key": "Accept-Language",
+                "value": "es",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{backend-host}}/poc/personal-finances/v1/expenses/csv/export",
+              "host": [
+                "{{backend-host}}"
+              ],
+              "path": [
+                "poc",
+                "personal-finances",
+                "v1",
+                "expenses",
+                "csv",
+                "export"
+              ],
+              "query": [
+                {
+                  "key": "category",
+                  "value": "TAXI",
+                  "type": "text",
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Expense Category",
+      "item": [
+        {
+          "name": "findCategories",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "trace-parent",
+                "value": "{{traceParent}}",
+                "type": "text"
+              },
+              {
+                "key": "caller-name",
+                "value": "WEB",
+                "type": "text"
+              },
+              {
+                "key": "user-code",
+                "value": "{{user-code}}",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{bearer-token}}",
+                "type": "text"
+              },
+              {
+                "key": "Accept-Language",
+                "value": "es",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{backend-host}}/poc/personal-finances/v1/expenses/categories",
+              "host": [
+                "{{backend-host}}"
+              ],
+              "path": [
+                "poc",
+                "personal-finances",
+                "v1",
+                "expenses",
+                "categories"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "updateCategory",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "trace-parent",
+                "value": "{{traceParent}}",
+                "type": "text"
+              },
+              {
+                "key": "caller-name",
+                "value": "WEB",
+                "type": "text"
+              },
+              {
+                "key": "user-code",
+                "value": "{{user-code}}",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{bearer-token}}",
+                "type": "text"
+              },
+              {
+                "key": "Accept-Language",
+                "value": "es",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"currency\": \"PEN\",\r\n    \"categories\": [\r\n        {\r\n            \"name\": \"PAREJA\",\r\n            \"limit\": 200.00,\r\n            \"recipientPatterns\": [\r\n                {\r\n                    \"code\": \"CONTAINS\",\r\n                    \"value\": \"Karla\"\r\n                }\r\n            ]\r\n        },\r\n        {\r\n            \"name\": \"INSTITUTO\",\r\n            \"limit\": 1200.00,\r\n            \"recipientPatterns\": [\r\n                {\r\n                    \"code\": \"CONTAINS\",\r\n                    \"value\": \"CIBERTEC\"\r\n                }\r\n            ]\r\n        }\r\n    ]\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{backend-host}}/poc/personal-finances/v1/expenses/categories",
+              "host": [
+                "{{backend-host}}"
+              ],
+              "path": [
+                "poc",
+                "personal-finances",
+                "v1",
+                "expenses",
+                "categories"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "assignCategories",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "trace-parent",
+                "value": "{{traceParent}}",
+                "type": "text"
+              },
+              {
+                "key": "caller-name",
+                "value": "WEB",
+                "type": "text"
+              },
+              {
+                "key": "user-code",
+                "value": "{{user-code}}",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{bearer-token}}",
+                "type": "text"
+              },
+              {
+                "key": "Accept-Language",
+                "value": "es",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"from\": \"2025-03-01T04:12:00.654Z\",\r\n    \"overwriteExistingCategories\": true\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{backend-host}}/poc/personal-finances/v1/expenses/categories/assignment",
+              "host": [
+                "{{backend-host}}"
+              ],
+              "path": [
+                "poc",
+                "personal-finances",
+                "v1",
+                "expenses",
+                "categories",
+                "assignment"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "findOrPersistUserActivity",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "trace-parent",
+            "value": "{{traceParent}}",
+            "type": "text"
+          },
+          {
+            "key": "caller-name",
+            "value": "WEB",
+            "type": "text"
+          },
+          {
+            "key": "user-code",
+            "value": "{{user-code}}",
+            "type": "text"
+          },
+          {
+            "key": "Authorization",
+            "value": "{{bearer-token}}",
+            "type": "text"
+          },
+          {
+            "key": "Accept-Language",
+            "value": "es",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{backend-host}}/poc/personal-finances/v1/user-activities",
+          "host": [
+            "{{backend-host}}"
+          ],
+          "path": [
+            "poc",
+            "personal-finances",
+            "v1",
+            "user-activities"
+          ]
+        }
+      },
+      "response": []
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          "function setTraceParent() {\r",
+          "    const hex = n => [...Array(n)].reduce(s => s + (Math.random()*16|0).toString(16), '');\r",
+          "    const traceId = Math.floor(Date.now()/1e3).toString(16).padStart(8,'0') + hex(24);\r",
+          "\r",
+          "    let spanId;\r",
+          "    do { spanId = hex(16); } while (/^0+$/.test(spanId));\r",
+          "\r",
+          "    //W3C Estandar\r",
+          "    const traceParent = `00-${traceId}-${spanId}-01`;\r",
+          "    pm.globals.set(\"traceParent\", traceParent);\r",
+          "}\r",
+          "\r",
+          "setTraceParent();\r",
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ]
+}
