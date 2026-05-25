@@ -1,17 +1,17 @@
 package com.demo.service.finances.extracted.expenses.strategy;
 
-import com.demo.service.commons.repository.gmail.wrapper.response.MessageContentResponseWrapper;
 import com.demo.service.commons.properties.ApplicationProperties;
 import com.demo.service.commons.properties.ApplicationPropertiesStub;
-import com.demo.service.finances.expenses.extracted.dto.response.ExtractExpenseResponseDto;
-import com.demo.service.finances.expenses.extracted.strategy.ExtractExpenseHelper;
-import com.demo.service.finances.expenses.extracted.strategy.ExtractExpenseStrategy;
-import com.demo.service.finances.expenses.extracted.strategy.ExtractExpenseStrategyDispatcher;
-import com.demo.service.finances.expenses.extracted.strategy.bbva.BBVADebitCardStrategy;
-import com.demo.service.finances.expenses.extracted.strategy.bbva.BBVAPlinMerchantQRStrategy;
-import com.demo.service.finances.expenses.extracted.strategy.bbva.BBVAPlinStrategy;
-import com.demo.service.finances.expenses.extracted.strategy.bbva.BBVAServicePaymentStrategy;
-import com.demo.service.finances.expenses.extracted.strategy.ibk.IBKPlinStrategy;
+import com.demo.service.commons.repository.gmail.wrapper.response.MessageContentResponseWrapper;
+import com.demo.service.expenses.extracted.dto.response.ExtractExpenseResponseDto;
+import com.demo.service.expenses.extracted.strategy.ExtractExpenseHelper;
+import com.demo.service.expenses.extracted.strategy.ExtractExpenseStrategy;
+import com.demo.service.expenses.extracted.strategy.ExtractExpenseStrategyDispatcher;
+import com.demo.service.expenses.extracted.strategy.bbva.BBVADebitCardStrategy;
+import com.demo.service.expenses.extracted.strategy.bbva.BBVAPlinMerchantQRStrategy;
+import com.demo.service.expenses.extracted.strategy.bbva.BBVAPlinStrategy;
+import com.demo.service.expenses.extracted.strategy.bbva.BBVAServicePaymentStrategy;
+import com.demo.service.expenses.extracted.strategy.ibk.IBKPlinStrategy;
 import com.demo.service.tools.InstanceStub;
 import com.demo.service.tools.JsonSerializer;
 import com.fasterxml.jackson.databind.ObjectMapper;

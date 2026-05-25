@@ -14,8 +14,9 @@ Reemplazar los siguientes valores donde corresponda:
 1. Descargar e instalar [commons-quarkus-parent](https://github.com/miguel-armas-abt/commons-quarkus-parent/README.md)
 2. Configurar las [variables de entorno](./variables.env) en el IDE.
 3. Ejecutar aplicación
+
 > #### `🟢 Opción 1` Ejecutar perfil dev
-> 
+>
 > ```shell
 > mvn clean compile quarkus:dev
 > ```
@@ -50,11 +51,13 @@ Reemplazar los siguientes valores donde corresponda:
 > ```
 
 2. Crear red
+
 ```shell
 docker network create --driver bridge common-network
 ```
 
 3. Ejecutar contenedor
+
 ```shell
 docker run --rm -p <APP_PORTS> --env-file ./variables.env --name <APP_CONTAINER> --network common-network <APP_IMAGE>
 ```
@@ -64,29 +67,34 @@ docker run --rm -p <APP_PORTS> --env-file ./variables.env --name <APP_CONTAINER>
 ## ▶️ Kubernetes
 
 1. Encender Minikube
+
 ```shell
 docker context use default
 minikube start
 ```
 
 2. Crear imagen dentro del clúster
+
 ```shell
 eval $(minikube docker-env --shell bash)
 docker build -t <APP_IMAGE> -f ./docker/Dockerfile.native .
 ```
 
 3. Crear namespace y aplicar manifiestos
+
 ```shell
 kubectl create namespace demo
 kubectl apply -f ./k8s.yaml -n demo
 ```
 
 4. Eliminar orquestación
+
 ```shell
 kubectl delete -f ./k8s.yaml -n demo
 ```
 
 5. Port-forward
+
 ```shell
 kubectl port-forward <POD_ID> <APP_PORTS> -n demo
 ```

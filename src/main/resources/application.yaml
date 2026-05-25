@@ -1,8 +1,10 @@
 quarkus:
   application:
-    name: personal-management-v1
+    name: personal-finances-v1
   http:
     port: ${SERVER_PORT:8080}
+    root-path: /poc/personal-finances/v1
+    non-application-root-path: q
   log:
     category:
       "org.mongodb.driver.cluster":

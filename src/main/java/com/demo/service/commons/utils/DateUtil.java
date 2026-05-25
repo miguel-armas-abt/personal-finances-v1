@@ -1,7 +1,7 @@
 package com.demo.service.commons.utils;
 
 import com.demo.service.commons.constants.Regex;
-import com.demo.service.finances.expenses.crud.exceptions.InvalidDateException;
+import com.demo.service.expenses.crud.exceptions.InvalidDateException;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 

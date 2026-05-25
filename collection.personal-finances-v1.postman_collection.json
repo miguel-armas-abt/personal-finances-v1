@@ -1,893 +1,817 @@
 {
-	"info": {
-		"_postman_id": "5379c96b-d5f7-474e-b9db-c876a1b50ceb",
-		"name": "personal-finances-v1",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "13773998"
-	},
-	"item": [
-		{
-			"name": "refreshExpenses",
-			"event": [
-				{
-					"listen": "prerequest",
-					"script": {
-						"exec": [
-							"function setTraceParent() {\r",
-							"    const hex = n => [...Array(n)].reduce(s => s + (Math.random()*16|0).toString(16), '');\r",
-							"    const traceId = Math.floor(Date.now()/1e3).toString(16).padStart(8,'0') + hex(24);\r",
-							"\r",
-							"    let spanId;\r",
-							"    do { spanId = hex(16); } while (/^0+$/.test(spanId));\r",
-							"\r",
-							"    //W3C Estandar\r",
-							"    const traceParent = `00-${traceId}-${spanId}-01`;\r",
-							"    pm.globals.set(\"traceParent\", traceParent);\r",
-							"}\r",
-							"\r",
-							"setTraceParent();\r",
-							""
-						],
-						"type": "text/javascript",
-						"packages": {},
-						"requests": {}
-					}
-				}
-			],
-			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "{{bearer-token}}",
-							"type": "string"
-						}
-					]
-				},
-				"method": "POST",
-				"header": [
-					{
-						"key": "trace-parent",
-						"value": "{{traceParent}}",
-						"type": "text"
-					},
-					{
-						"key": "caller-name",
-						"value": "WEB",
-						"type": "text"
-					},
-					{
-						"key": "user-code",
-						"value": "{{userCode}}",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "http://localhost:8080/poc/personal-finances/v1/expenses/refresh",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"poc",
-						"personal-finances",
-						"v1",
-						"expenses",
-						"refresh"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "importExpenses",
-			"event": [
-				{
-					"listen": "prerequest",
-					"script": {
-						"exec": [
-							"function setTraceParent() {\r",
-							"    const hex = n => [...Array(n)].reduce(s => s + (Math.random()*16|0).toString(16), '');\r",
-							"    const traceId = Math.floor(Date.now()/1e3).toString(16).padStart(8,'0') + hex(24);\r",
-							"\r",
-							"    let spanId;\r",
-							"    do { spanId = hex(16); } while (/^0+$/.test(spanId));\r",
-							"\r",
-							"    //W3C Estandar\r",
-							"    const traceParent = `00-${traceId}-${spanId}-01`;\r",
-							"    pm.globals.set(\"traceParent\", traceParent);\r",
-							"}\r",
-							"\r",
-							"setTraceParent();\r",
-							""
-						],
-						"type": "text/javascript",
-						"packages": {},
-						"requests": {}
-					}
-				}
-			],
-			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "{{bearer-token}}",
-							"type": "string"
-						}
-					]
-				},
-				"method": "POST",
-				"header": [
-					{
-						"key": "trace-parent",
-						"value": "{{traceParent}}",
-						"type": "text"
-					},
-					{
-						"key": "caller-name",
-						"value": "WEB",
-						"type": "text"
-					},
-					{
-						"key": "user-code",
-						"value": "{{userCode}}",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "formdata",
-					"formdata": [
-						{
-							"key": "file",
-							"type": "file",
-							"src": "/C:/Users/User/Downloads/expenses-29-03-2026.csv"
-						}
-					]
-				},
-				"url": {
-					"raw": "http://localhost:8080/poc/personal-finances/v1/expenses/csv/import",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"poc",
-						"personal-finances",
-						"v1",
-						"expenses",
-						"csv",
-						"import"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "exportExpenses",
-			"event": [
-				{
-					"listen": "prerequest",
-					"script": {
-						"exec": [
-							"function setTraceParent() {\r",
-							"    const hex = n => [...Array(n)].reduce(s => s + (Math.random()*16|0).toString(16), '');\r",
-							"    const traceId = Math.floor(Date.now()/1e3).toString(16).padStart(8,'0') + hex(24);\r",
-							"\r",
-							"    let spanId;\r",
-							"    do { spanId = hex(16); } while (/^0+$/.test(spanId));\r",
-							"\r",
-							"    //W3C Estandar\r",
-							"    const traceParent = `00-${traceId}-${spanId}-01`;\r",
-							"    pm.globals.set(\"traceParent\", traceParent);\r",
-							"}\r",
-							"\r",
-							"setTraceParent();\r",
-							""
-						],
-						"type": "text/javascript",
-						"packages": {},
-						"requests": {}
-					}
-				}
-			],
-			"protocolProfileBehavior": {
-				"disableBodyPruning": true
-			},
-			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "{{bearer-token}}",
-							"type": "string"
-						}
-					]
-				},
-				"method": "GET",
-				"header": [
-					{
-						"key": "trace-parent",
-						"value": "{{traceParent}}",
-						"type": "text"
-					},
-					{
-						"key": "caller-name",
-						"value": "WEB",
-						"type": "text"
-					},
-					{
-						"key": "Accept",
-						"value": "text/csv",
-						"type": "text"
-					},
-					{
-						"key": "user-code",
-						"value": "{{userCode}}",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "http://localhost:8080/poc/personal-finances/v1/expenses/csv/export",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"poc",
-						"personal-finances",
-						"v1",
-						"expenses",
-						"csv",
-						"export"
-					],
-					"query": [
-						{
-							"key": "category",
-							"value": "TAXI",
-							"disabled": true
-						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "saveExpense",
-			"event": [
-				{
-					"listen": "prerequest",
-					"script": {
-						"exec": [
-							"function setTraceParent() {\r",
-							"    const hex = n => [...Array(n)].reduce(s => s + (Math.random()*16|0).toString(16), '');\r",
-							"    const traceId = Math.floor(Date.now()/1e3).toString(16).padStart(8,'0') + hex(24);\r",
-							"\r",
-							"    let spanId;\r",
-							"    do { spanId = hex(16); } while (/^0+$/.test(spanId));\r",
-							"\r",
-							"    //W3C Estandar\r",
-							"    const traceParent = `00-${traceId}-${spanId}-01`;\r",
-							"    pm.globals.set(\"traceParent\", traceParent);\r",
-							"}\r",
-							"\r",
-							"setTraceParent();\r",
-							""
-						],
-						"type": "text/javascript",
-						"packages": {},
-						"requests": {}
-					}
-				}
-			],
-			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "{{bearer-token}}",
-							"type": "string"
-						}
-					]
-				},
-				"method": "POST",
-				"header": [
-					{
-						"key": "trace-parent",
-						"value": "{{traceParent}}",
-						"type": "text"
-					},
-					{
-						"key": "caller-name",
-						"value": "WEB",
-						"type": "text"
-					},
-					{
-						"key": "user-code",
-						"value": "{{userCode}}",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"date\": \"2026-03-28T20:25:00Z\",\r\n    \"currency\": \"PEN\",\r\n    \"amount\": 25.5,\r\n    \"detail\": {\r\n        \"category\": \"TAXI\",\r\n        \"comments\": \"INDRIVE - Musa -> Viñas\",\r\n        \"recipient\": \"Carlos Alvarez\",\r\n        \"source\": \"BBVA_PLIN\"\r\n    }\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "http://localhost:8080/poc/personal-finances/v1/expenses",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"poc",
-						"personal-finances",
-						"v1",
-						"expenses"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "updateExpense",
-			"event": [
-				{
-					"listen": "prerequest",
-					"script": {
-						"exec": [
-							"function setTraceParent() {\r",
-							"    const hex = n => [...Array(n)].reduce(s => s + (Math.random()*16|0).toString(16), '');\r",
-							"    const traceId = Math.floor(Date.now()/1e3).toString(16).padStart(8,'0') + hex(24);\r",
-							"\r",
-							"    let spanId;\r",
-							"    do { spanId = hex(16); } while (/^0+$/.test(spanId));\r",
-							"\r",
-							"    //W3C Estandar\r",
-							"    const traceParent = `00-${traceId}-${spanId}-01`;\r",
-							"    pm.globals.set(\"traceParent\", traceParent);\r",
-							"}\r",
-							"\r",
-							"setTraceParent();\r",
-							""
-						],
-						"type": "text/javascript",
-						"packages": {},
-						"requests": {}
-					}
-				}
-			],
-			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "{{bearer-token}}",
-							"type": "string"
-						}
-					]
-				},
-				"method": "PUT",
-				"header": [
-					{
-						"key": "trace-parent",
-						"value": "{{traceParent}}",
-						"type": "text"
-					},
-					{
-						"key": "caller-name",
-						"value": "WEB",
-						"type": "text"
-					},
-					{
-						"key": "user-code",
-						"value": "{{userCode}}",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"date\": \"2026-03-28T20:25:00Z\",\r\n    \"currency\": \"USD\",\r\n    \"amount\": 55.2,\r\n    \"detail\": {\r\n        \"category\": \"PAREJA\",\r\n        \"comments\": \"INDRIVE - Musa -> Viñas\",\r\n        \"recipient\": \"Franco Vidal\"\r\n    }\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "http://localhost:8080/poc/personal-finances/v1/expenses/69c9cd28ffa3570bb0bb8637",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"poc",
-						"personal-finances",
-						"v1",
-						"expenses",
-						"69c9cd28ffa3570bb0bb8637"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "deleteExpense",
-			"event": [
-				{
-					"listen": "prerequest",
-					"script": {
-						"exec": [
-							"function setTraceParent() {\r",
-							"    const hex = n => [...Array(n)].reduce(s => s + (Math.random()*16|0).toString(16), '');\r",
-							"    const traceId = Math.floor(Date.now()/1e3).toString(16).padStart(8,'0') + hex(24);\r",
-							"\r",
-							"    let spanId;\r",
-							"    do { spanId = hex(16); } while (/^0+$/.test(spanId));\r",
-							"\r",
-							"    //W3C Estandar\r",
-							"    const traceParent = `00-${traceId}-${spanId}-01`;\r",
-							"    pm.globals.set(\"traceParent\", traceParent);\r",
-							"}\r",
-							"\r",
-							"setTraceParent();\r",
-							""
-						],
-						"type": "text/javascript",
-						"packages": {},
-						"requests": {}
-					}
-				}
-			],
-			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "{{bearer-token}}",
-							"type": "string"
-						}
-					]
-				},
-				"method": "DELETE",
-				"header": [
-					{
-						"key": "trace-parent",
-						"value": "{{traceParent}}",
-						"type": "text"
-					},
-					{
-						"key": "caller-name",
-						"value": "WEB",
-						"type": "text"
-					},
-					{
-						"key": "user-code",
-						"value": "{{userCode}}",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "http://localhost:8080/poc/personal-finances/v1/expenses/69c35d97e127a85424eb0818",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"poc",
-						"personal-finances",
-						"v1",
-						"expenses",
-						"69c35d97e127a85424eb0818"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "searchExpense",
-			"event": [
-				{
-					"listen": "prerequest",
-					"script": {
-						"exec": [
-							"function setTraceParent() {\r",
-							"    const hex = n => [...Array(n)].reduce(s => s + (Math.random()*16|0).toString(16), '');\r",
-							"    const traceId = Math.floor(Date.now()/1e3).toString(16).padStart(8,'0') + hex(24);\r",
-							"\r",
-							"    let spanId;\r",
-							"    do { spanId = hex(16); } while (/^0+$/.test(spanId));\r",
-							"\r",
-							"    //W3C Estandar\r",
-							"    const traceParent = `00-${traceId}-${spanId}-01`;\r",
-							"    pm.globals.set(\"traceParent\", traceParent);\r",
-							"}\r",
-							"\r",
-							"setTraceParent();\r",
-							""
-						],
-						"type": "text/javascript",
-						"packages": {},
-						"requests": {}
-					}
-				}
-			],
-			"protocolProfileBehavior": {
-				"disableBodyPruning": true
-			},
-			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "{{bearer-token}}",
-							"type": "string"
-						}
-					]
-				},
-				"method": "GET",
-				"header": [
-					{
-						"key": "trace-parent",
-						"value": "{{traceParent}}",
-						"type": "text"
-					},
-					{
-						"key": "caller-name",
-						"value": "WEB",
-						"type": "text"
-					},
-					{
-						"key": "user-code",
-						"value": "{{userCode}}",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "http://localhost:8080/poc/personal-finances/v1/expenses?category=PAREJA&from=2026-02-22T20:25:00Z&to=2026-02-24T20:25:00Z",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"poc",
-						"personal-finances",
-						"v1",
-						"expenses"
-					],
-					"query": [
-						{
-							"key": "recipient",
-							"value": "Karla",
-							"disabled": true
-						},
-						{
-							"key": "category",
-							"value": "PAREJA"
-						},
-						{
-							"key": "currency",
-							"value": "PEN",
-							"disabled": true
-						},
-						{
-							"key": "from",
-							"value": "2026-02-22T20:25:00Z"
-						},
-						{
-							"key": "to",
-							"value": "2026-02-24T20:25:00Z"
-						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "findCategories",
-			"event": [
-				{
-					"listen": "prerequest",
-					"script": {
-						"exec": [
-							"function setTraceParent() {\r",
-							"    const hex = n => [...Array(n)].reduce(s => s + (Math.random()*16|0).toString(16), '');\r",
-							"    const traceId = Math.floor(Date.now()/1e3).toString(16).padStart(8,'0') + hex(24);\r",
-							"\r",
-							"    let spanId;\r",
-							"    do { spanId = hex(16); } while (/^0+$/.test(spanId));\r",
-							"\r",
-							"    //W3C Estandar\r",
-							"    const traceParent = `00-${traceId}-${spanId}-01`;\r",
-							"    pm.globals.set(\"traceParent\", traceParent);\r",
-							"}\r",
-							"\r",
-							"setTraceParent();\r",
-							""
-						],
-						"type": "text/javascript",
-						"packages": {},
-						"requests": {}
-					}
-				}
-			],
-			"protocolProfileBehavior": {
-				"disableBodyPruning": true
-			},
-			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "{{bearer-token}}",
-							"type": "string"
-						}
-					]
-				},
-				"method": "GET",
-				"header": [
-					{
-						"key": "trace-parent",
-						"value": "{{traceParent}}",
-						"type": "text"
-					},
-					{
-						"key": "caller-name",
-						"value": "WEB",
-						"type": "text"
-					},
-					{
-						"key": "user-code",
-						"value": "{{userCode}}",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "http://localhost:8080/poc/personal-finances/v1/expense-categories",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"poc",
-						"personal-finances",
-						"v1",
-						"expense-categories"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "updateCategory",
-			"event": [
-				{
-					"listen": "prerequest",
-					"script": {
-						"exec": [
-							"function setTraceParent() {\r",
-							"    const hex = n => [...Array(n)].reduce(s => s + (Math.random()*16|0).toString(16), '');\r",
-							"    const traceId = Math.floor(Date.now()/1e3).toString(16).padStart(8,'0') + hex(24);\r",
-							"\r",
-							"    let spanId;\r",
-							"    do { spanId = hex(16); } while (/^0+$/.test(spanId));\r",
-							"\r",
-							"    //W3C Estandar\r",
-							"    const traceParent = `00-${traceId}-${spanId}-01`;\r",
-							"    pm.globals.set(\"traceParent\", traceParent);\r",
-							"}\r",
-							"\r",
-							"setTraceParent();\r",
-							""
-						],
-						"type": "text/javascript",
-						"packages": {},
-						"requests": {}
-					}
-				}
-			],
-			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "{{bearer-token}}",
-							"type": "string"
-						}
-					]
-				},
-				"method": "POST",
-				"header": [
-					{
-						"key": "trace-parent",
-						"value": "{{traceParent}}",
-						"type": "text"
-					},
-					{
-						"key": "caller-name",
-						"value": "WEB",
-						"type": "text"
-					},
-					{
-						"key": "user-code",
-						"value": "{{userCode}}",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"currency\": \"PEN\",\r\n    \"categories\": [\r\n        {\r\n            \"name\": \"PAREJA\",\r\n            \"limit\": 100.00,\r\n            \"recipientPatterns\": [\r\n                {\r\n                    \"code\": \"CONTAINS\",\r\n                    \"value\": \"Karla\"\r\n                }\r\n            ]\r\n        },\r\n        {\r\n            \"name\": \"TRANSPORTE\",\r\n            \"limit\": 80.00\r\n        }\r\n    ]\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "http://localhost:8080/poc/personal-finances/v1/expense-categories",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"poc",
-						"personal-finances",
-						"v1",
-						"expense-categories"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "findOrPersistUserActivity",
-			"event": [
-				{
-					"listen": "prerequest",
-					"script": {
-						"exec": [
-							"function setTraceParent() {\r",
-							"    const hex = n => [...Array(n)].reduce(s => s + (Math.random()*16|0).toString(16), '');\r",
-							"    const traceId = Math.floor(Date.now()/1e3).toString(16).padStart(8,'0') + hex(24);\r",
-							"\r",
-							"    let spanId;\r",
-							"    do { spanId = hex(16); } while (/^0+$/.test(spanId));\r",
-							"\r",
-							"    //W3C Estandar\r",
-							"    const traceParent = `00-${traceId}-${spanId}-01`;\r",
-							"    pm.globals.set(\"traceParent\", traceParent);\r",
-							"}\r",
-							"\r",
-							"setTraceParent();\r",
-							""
-						],
-						"type": "text/javascript",
-						"packages": {},
-						"requests": {}
-					}
-				}
-			],
-			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "{{bearer-token}}",
-							"type": "string"
-						}
-					]
-				},
-				"method": "POST",
-				"header": [
-					{
-						"key": "trace-parent",
-						"value": "{{traceParent}}",
-						"type": "text"
-					},
-					{
-						"key": "caller-name",
-						"value": "WEB",
-						"type": "text"
-					},
-					{
-						"key": "user-code",
-						"value": "{{userCode}}",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "http://localhost:8080/poc/personal-finances/v1/user-activities",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"poc",
-						"personal-finances",
-						"v1",
-						"user-activities"
-					]
-				}
-			},
-			"response": []
-		}
-	]
+  "info": {
+    "_postman_id": "5379c96b-d5f7-474e-b9db-c876a1b50ceb",
+    "name": "personal-finances-v1",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "13773998"
+  },
+  "item": [
+    {
+      "name": "Expenses",
+      "item": [
+        {
+          "name": "searchExpense",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearer-token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "trace-parent",
+                "value": "{{traceParent}}",
+                "type": "text"
+              },
+              {
+                "key": "caller-name",
+                "value": "WEB",
+                "type": "text"
+              },
+              {
+                "key": "user-code",
+                "value": "{{userCode}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/poc/personal-finances/v1/expenses?category=PAREJA&from=2026-02-22T20:25:00Z&to=2026-02-24T20:25:00Z",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "poc",
+                "personal-finances",
+                "v1",
+                "expenses"
+              ],
+              "query": [
+                {
+                  "key": "recipient",
+                  "value": "Karla",
+                  "disabled": true
+                },
+                {
+                  "key": "category",
+                  "value": "PAREJA"
+                },
+                {
+                  "key": "currency",
+                  "value": "PEN",
+                  "disabled": true
+                },
+                {
+                  "key": "from",
+                  "value": "2026-02-22T20:25:00Z"
+                },
+                {
+                  "key": "to",
+                  "value": "2026-02-24T20:25:00Z"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "saveExpense",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearer-token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "trace-parent",
+                "value": "{{traceParent}}",
+                "type": "text"
+              },
+              {
+                "key": "caller-name",
+                "value": "WEB",
+                "type": "text"
+              },
+              {
+                "key": "user-code",
+                "value": "{{userCode}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"date\": \"2026-03-28T20:25:00Z\",\r\n    \"currency\": \"PEN\",\r\n    \"amount\": 25.5,\r\n    \"detail\": {\r\n        \"category\": \"TAXI\",\r\n        \"comments\": \"INDRIVE - Musa -> Viñas\",\r\n        \"recipient\": \"Carlos Alvarez\",\r\n        \"source\": \"BBVA_PLIN\"\r\n    }\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/poc/personal-finances/v1/expenses",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "poc",
+                "personal-finances",
+                "v1",
+                "expenses"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "updateExpense",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearer-token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [
+              {
+                "key": "trace-parent",
+                "value": "{{traceParent}}",
+                "type": "text"
+              },
+              {
+                "key": "caller-name",
+                "value": "WEB",
+                "type": "text"
+              },
+              {
+                "key": "user-code",
+                "value": "{{userCode}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"date\": \"2026-03-28T20:25:00Z\",\r\n    \"currency\": \"USD\",\r\n    \"amount\": 55.2,\r\n    \"detail\": {\r\n        \"category\": \"PAREJA\",\r\n        \"comments\": \"INDRIVE - Musa -> Viñas\",\r\n        \"recipient\": \"Franco Vidal\"\r\n    }\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/poc/personal-finances/v1/expenses/69c9cd28ffa3570bb0bb8637",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "poc",
+                "personal-finances",
+                "v1",
+                "expenses",
+                "69c9cd28ffa3570bb0bb8637"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "deleteExpense",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearer-token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "trace-parent",
+                "value": "{{traceParent}}",
+                "type": "text"
+              },
+              {
+                "key": "caller-name",
+                "value": "WEB",
+                "type": "text"
+              },
+              {
+                "key": "user-code",
+                "value": "{{userCode}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/poc/personal-finances/v1/expenses/69c35d97e127a85424eb0818",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "poc",
+                "personal-finances",
+                "v1",
+                "expenses",
+                "69c35d97e127a85424eb0818"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "refreshExpenses",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearer-token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "trace-parent",
+                "value": "{{traceParent}}",
+                "type": "text"
+              },
+              {
+                "key": "caller-name",
+                "value": "WEB",
+                "type": "text"
+              },
+              {
+                "key": "user-code",
+                "value": "{{userCode}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/poc/personal-finances/v1/expenses/refresh",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "poc",
+                "personal-finances",
+                "v1",
+                "expenses",
+                "refresh"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "CSV Expenses",
+      "item": [
+        {
+          "name": "importExpenses",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearer-token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "trace-parent",
+                "value": "{{traceParent}}",
+                "type": "text"
+              },
+              {
+                "key": "caller-name",
+                "value": "WEB",
+                "type": "text"
+              },
+              {
+                "key": "user-code",
+                "value": "{{userCode}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "uuid": "2c899f61-d6a6-4712-b959-4f8481790ab8",
+                  "src": "/C:/Users/User/Downloads/expenses-29-03-2026.csv"
+                }
+              ]
+            },
+            "url": {
+              "raw": "http://localhost:8080/poc/personal-finances/v1/expenses/csv/import",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "poc",
+                "personal-finances",
+                "v1",
+                "expenses",
+                "csv",
+                "import"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "exportExpenses",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearer-token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "trace-parent",
+                "value": "{{traceParent}}",
+                "type": "text"
+              },
+              {
+                "key": "caller-name",
+                "value": "WEB",
+                "type": "text"
+              },
+              {
+                "key": "Accept",
+                "value": "text/csv",
+                "type": "text"
+              },
+              {
+                "key": "user-code",
+                "value": "{{userCode}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/poc/personal-finances/v1/expenses/csv/export",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "poc",
+                "personal-finances",
+                "v1",
+                "expenses",
+                "csv",
+                "export"
+              ],
+              "query": [
+                {
+                  "key": "category",
+                  "value": "TAXI",
+                  "type": "text",
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Categories",
+      "item": [
+        {
+          "name": "findCategories",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearer-token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "trace-parent",
+                "value": "{{traceParent}}",
+                "type": "text"
+              },
+              {
+                "key": "caller-name",
+                "value": "WEB",
+                "type": "text"
+              },
+              {
+                "key": "user-code",
+                "value": "{{userCode}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/poc/personal-finances/v1/expense-categories",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "poc",
+                "personal-finances",
+                "v1",
+                "expense-categories"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "updateCategory",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearer-token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "trace-parent",
+                "value": "{{traceParent}}",
+                "type": "text"
+              },
+              {
+                "key": "caller-name",
+                "value": "WEB",
+                "type": "text"
+              },
+              {
+                "key": "user-code",
+                "value": "{{userCode}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"currency\": \"PEN\",\r\n    \"categories\": [\r\n        {\r\n            \"name\": \"PAREJA\",\r\n            \"limit\": 100.00,\r\n            \"recipientPatterns\": [\r\n                {\r\n                    \"code\": \"CONTAINS\",\r\n                    \"value\": \"Karla\"\r\n                }\r\n            ]\r\n        },\r\n        {\r\n            \"name\": \"TRANSPORTE\",\r\n            \"limit\": 80.00\r\n        }\r\n    ]\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/poc/personal-finances/v1/expense-categories",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "poc",
+                "personal-finances",
+                "v1",
+                "expense-categories"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "findOrPersistUserActivity",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{bearer-token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [
+          {
+            "key": "trace-parent",
+            "value": "{{traceParent}}",
+            "type": "text"
+          },
+          {
+            "key": "caller-name",
+            "value": "WEB",
+            "type": "text"
+          },
+          {
+            "key": "user-code",
+            "value": "{{userCode}}",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8080/poc/personal-finances/v1/user-activities",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "poc",
+            "personal-finances",
+            "v1",
+            "user-activities"
+          ]
+        }
+      },
+      "response": []
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          "function setTraceParent() {\r",
+          "    const hex = n => [...Array(n)].reduce(s => s + (Math.random()*16|0).toString(16), '');\r",
+          "    const traceId = Math.floor(Date.now()/1e3).toString(16).padStart(8,'0') + hex(24);\r",
+          "\r",
+          "    let spanId;\r",
+          "    do { spanId = hex(16); } while (/^0+$/.test(spanId));\r",
+          "\r",
+          "    //W3C Estandar\r",
+          "    const traceParent = `00-${traceId}-${spanId}-01`;\r",
+          "    pm.globals.set(\"traceParent\", traceParent);\r",
+          "}\r",
+          "\r",
+          "setTraceParent();\r",
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ]
 }

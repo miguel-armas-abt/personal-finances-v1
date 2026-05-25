@@ -5,7 +5,7 @@ kind: Secret
 metadata:
   name: personal-management-v1-secret
 type: Opaque
-data: {}
+data: { }
 ---
 # Source: generic-backend-chart/templates/configmap.yaml
 apiVersion: v1
@@ -13,8 +13,8 @@ kind: ConfigMap
 metadata:
   name: personal-management-v1-config-map
 data:
-    JAVA_OPTS: "-Xms256M -Xmx256M"
-    GMAIL_ENDPOINT: "https://gmail.googleapis.com/gmail/v1/"
+  JAVA_OPTS: "-Xms256M -Xmx256M"
+  GMAIL_ENDPOINT: "https://gmail.googleapis.com/gmail/v1/"
 ---
 # Source: generic-backend-chart/templates/service.yaml
 apiVersion: v1
@@ -83,32 +83,32 @@ spec:
             periodSeconds: 30
 
           env:
-              - name: JAVA_OPTS
-                valueFrom:
-                  configMapKeyRef:
-                    name: personal-management-v1-config-map
-                    key: JAVA_OPTS
+            - name: JAVA_OPTS
+              valueFrom:
+                configMapKeyRef:
+                  name: personal-management-v1-config-map
+                  key: JAVA_OPTS
 
-              - name: CONTACT_DATA_ENDPOINT
-                valueFrom:
-                  configMapKeyRef:
-                    name: personal-management-v1-config-map
-                    key: CONTACT_DATA_ENDPOINT
+            - name: CONTACT_DATA_ENDPOINT
+              valueFrom:
+                configMapKeyRef:
+                  name: personal-management-v1-config-map
+                  key: CONTACT_DATA_ENDPOINT
 
-              - name: PENDING_ORDERS_ENDPOINT
-                valueFrom:
-                  configMapKeyRef:
-                    name: personal-management-v1-config-map
-                    key: PENDING_ORDERS_ENDPOINT
+            - name: PENDING_ORDERS_ENDPOINT
+              valueFrom:
+                configMapKeyRef:
+                  name: personal-management-v1-config-map
+                  key: PENDING_ORDERS_ENDPOINT
 
-              - name: AVAILABILITY_ENDPOINT
-                valueFrom:
-                  configMapKeyRef:
-                    name: personal-management-v1-config-map
-                    key: AVAILABILITY_ENDPOINT
+            - name: AVAILABILITY_ENDPOINT
+              valueFrom:
+                configMapKeyRef:
+                  name: personal-management-v1-config-map
+                  key: AVAILABILITY_ENDPOINT
 
-              - name: RESERVATION_ENDPOINT
-                valueFrom:
-                  configMapKeyRef:
-                    name: personal-management-v1-config-map
-                    key: RESERVATION_ENDPOINT
+            - name: RESERVATION_ENDPOINT
+              valueFrom:
+                configMapKeyRef:
+                  name: personal-management-v1-config-map
+                  key: RESERVATION_ENDPOINT

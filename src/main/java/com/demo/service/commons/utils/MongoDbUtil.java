@@ -1,6 +1,6 @@
 package com.demo.service.commons.utils;
 
-import com.demo.service.finances.expenses.crud.exceptions.InvalidObjectIdFormatException;
+import com.demo.service.expenses.crud.exceptions.InvalidObjectIdFormatException;
 import io.smallrye.mutiny.Uni;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;

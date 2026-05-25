@@ -1,22 +1,14 @@
-openapi: 3.0.3
+openapi: 3.0.1
 info:
-  title: Personal Finances Expenses API
+  title: Personal Finances V1
   version: 1.0.0
   description: |
     API para registrar, consultar, actualizar, eliminar, refrescar e importar/exportar gastos personales.
-    La especificación está diseñada para generación de contratos REST con OpenAPI Generator en Quarkus.
-
-servers:
-  - url: /
 
 tags:
   - name: Expenses
-    description: Operaciones CRUD y consulta de gastos personales.
-  - name: Expense CSV
-    description: Importación y exportación de gastos en formato CSV.
-
-security:
-  - bearerAuth: []
+  - name: CSV Expenses
+  - name: Categories
 
 paths:
   /poc/personal-finances/v1/expenses:
@@ -25,13 +17,13 @@ paths:
         - Expenses
       summary: Buscar gastos con paginación por cursor
       description: |
-        Devuelve los gastos del usuario aplicando filtros opcionales y paginación basada en cursor.
+        Buscar gastos del usuario aplicando filtros opcionales y paginación basada en cursor.
       operationId: searchExpenses
       parameters:
-        - $ref: '#/components/parameters/ChannelIdHeader'
+        - $ref: '#/components/parameters/CallerNameHeader'
         - $ref: '#/components/parameters/TraceParentHeader'
-        - $ref: '#/components/parameters/UserEmailQuery'
-        - $ref: '#/components/parameters/CommentsQuery'
+        - $ref: '#/components/parameters/UserCodeHeader'
+        - $ref: '#/components/parameters/RecipientQuery'
         - $ref: '#/components/parameters/CategoryQuery'
         - $ref: '#/components/parameters/CurrencyQuery'
         - $ref: '#/components/parameters/FromDateQuery'
@@ -39,7 +31,7 @@ paths:
         - $ref: '#/components/parameters/EncodedCursorQuery'
       responses:
         '200':
-          description: Búsqueda realizada correctamente.
+          description: Ok
           content:
             application/json:
               schema:
@@ -54,12 +46,13 @@ paths:
     post:
       tags:
         - Expenses
-      summary: Registrar gasto
-      description: Crea un nuevo gasto personal para un usuario.
+      summary: Registrar gasto personal
+      description: Registrar gasto personal.
       operationId: saveExpense
       parameters:
-        - $ref: '#/components/parameters/ChannelIdHeader'
+        - $ref: '#/components/parameters/CallerNameHeader'
         - $ref: '#/components/parameters/TraceParentHeader'
+        - $ref: '#/components/parameters/UserCodeHeader'
       requestBody:
         required: true
         content:
@@ -68,7 +61,7 @@ paths:
               $ref: '#/components/schemas/ExpenseSaveRequestDto'
       responses:
         '201':
-          description: Gasto creado correctamente.
+          description: Created
           headers:
             Location:
               description: URI relativa del recurso creado.
@@ -91,11 +84,12 @@ paths:
       tags:
         - Expenses
       summary: Actualizar gasto
-      description: Actualiza completamente un gasto existente identificado por su id.
+      description: Actualizar un gasto existente identificado por su id.
       operationId: updateExpense
       parameters:
-        - $ref: '#/components/parameters/ChannelIdHeader'
+        - $ref: '#/components/parameters/CallerNameHeader'
         - $ref: '#/components/parameters/TraceParentHeader'
+        - $ref: '#/components/parameters/UserCodeHeader'
         - $ref: '#/components/parameters/ExpenseIdPath'
       requestBody:
         required: true
@@ -105,7 +99,7 @@ paths:
               $ref: '#/components/schemas/ExpenseUpdateRequestDto'
       responses:
         '204':
-          description: Gasto actualizado correctamente.
+          description: No Content
         '400':
           $ref: '#/components/responses/BadRequestError'
         '401':
@@ -119,15 +113,16 @@ paths:
       tags:
         - Expenses
       summary: Eliminar gasto
-      description: Elimina un gasto existente identificado por su id.
+      description: Eliminar gasto existente identificado por su id.
       operationId: deleteExpense
       parameters:
-        - $ref: '#/components/parameters/ChannelIdHeader'
+        - $ref: '#/components/parameters/CallerNameHeader'
         - $ref: '#/components/parameters/TraceParentHeader'
+        - $ref: '#/components/parameters/UserCodeHeader'
         - $ref: '#/components/parameters/ExpenseIdPath'
       responses:
         '204':
-          description: Gasto eliminado correctamente.
+          description: No Content
         '400':
           $ref: '#/components/responses/BadRequestError'
         '401':
@@ -137,7 +132,7 @@ paths:
         '500':
           $ref: '#/components/responses/InternalServerError'
 
-  /poc/personal-finances/v1/expenses/refresh/{userEmail}:
+  /poc/personal-finances/v1/expenses/refresh:
     post:
       tags:
         - Expenses
@@ -146,12 +141,12 @@ paths:
         Ejecuta un proceso de refresco de gastos para el correo electrónico indicado.
       operationId: refreshExpenses
       parameters:
-        - $ref: '#/components/parameters/ChannelIdHeader'
+        - $ref: '#/components/parameters/CallerNameHeader'
         - $ref: '#/components/parameters/TraceParentHeader'
-        - $ref: '#/components/parameters/UserEmailPath'
+        - $ref: '#/components/parameters/UserCodeHeader'
       responses:
         '204':
-          description: Refresco ejecutado correctamente.
+          description: No Content
         '400':
           $ref: '#/components/responses/BadRequestError'
         '401':
@@ -159,18 +154,18 @@ paths:
         '500':
           $ref: '#/components/responses/InternalServerError'
 
-  /poc/personal-finances/v1/expenses/csv/import/{userEmail}:
+  /poc/personal-finances/v1/expenses/csv/import:
     post:
       tags:
-        - Expense CSV
+        - CSV Expenses
       summary: Importar gastos desde CSV
       description: |
         Importa gastos para un usuario a partir de un archivo CSV enviado en multipart/form-data.
       operationId: importCsv
       parameters:
-        - $ref: '#/components/parameters/ChannelIdHeader'
+        - $ref: '#/components/parameters/CallerNameHeader'
         - $ref: '#/components/parameters/TraceParentHeader'
-        - $ref: '#/components/parameters/UserEmailPath'
+        - $ref: '#/components/parameters/UserCodeHeader'
       requestBody:
         required: true
         content:
@@ -190,16 +185,16 @@ paths:
   /poc/personal-finances/v1/expenses/csv/export:
     get:
       tags:
-        - Expense CSV
+        - CSV Expenses
       summary: Exportar gastos a CSV
       description: |
         Exporta los gastos del usuario en formato CSV aplicando filtros opcionales.
       operationId: exportCsv
       parameters:
-        - $ref: '#/components/parameters/ChannelIdHeader'
+        - $ref: '#/components/parameters/CallerNameHeader'
         - $ref: '#/components/parameters/TraceParentHeader'
-        - $ref: '#/components/parameters/UserEmailQuery'
-        - $ref: '#/components/parameters/CommentsQuery'
+        - $ref: '#/components/parameters/UserCodeHeader'
+        - $ref: '#/components/parameters/RecipientQuery'
         - $ref: '#/components/parameters/CategoryQuery'
         - $ref: '#/components/parameters/CurrencyQuery'
         - $ref: '#/components/parameters/FromDateQuery'
@@ -231,28 +226,27 @@ paths:
           $ref: '#/components/responses/InternalServerError'
 
 components:
-  securitySchemes:
-    bearerAuth:
-      type: http
-      scheme: bearer
-      bearerFormat: JWT
-
   parameters:
-    ChannelIdHeader:
-      name: channelId
+    CallerNameHeader:
+      name: caller-name
       in: header
       required: true
-      description: Canal desde el que se invoca la operación.
       schema:
-        $ref: '#/components/schemas/ChannelIdHeaderSchema'
+        $ref: '#/components/schemas/CallerNameHeaderSchema'
 
     TraceParentHeader:
-      name: traceParent
+      name: trace-parent
       in: header
       required: true
-      description: Identificador de trazabilidad distribuida de la solicitud.
       schema:
         $ref: '#/components/schemas/TraceParentHeaderSchema'
+
+    UserCodeHeader:
+      name: user-code
+      in: header
+      required: true
+      schema:
+        $ref: '#/components/schemas/UserCodeHeaderSchema'
 
     ExpenseIdPath:
       name: expenseId
@@ -262,29 +256,12 @@ components:
       schema:
         $ref: '#/components/schemas/ExpenseIdSchema'
 
-    UserEmailPath:
-      name: userEmail
-      in: path
-      required: true
-      description: Correo electrónico del usuario propietario de los gastos.
-      schema:
-        $ref: '#/components/schemas/UserEmailSchema'
-
-    UserEmailQuery:
-      name: userEmail
-      in: query
-      required: true
-      description: Correo electrónico del usuario propietario de los gastos.
-      schema:
-        $ref: '#/components/schemas/UserEmailSchema'
-
-    CommentsQuery:
-      name: comments
+    RecipientQuery:
+      name: recipient
       in: query
       required: false
-      description: Texto libre para filtrar por comentarios del gasto.
       schema:
-        $ref: '#/components/schemas/CommentsSchema'
+        $ref: '#/components/schemas/RecipientSchema'
 
     CategoryQuery:
       name: category
@@ -306,17 +283,15 @@ components:
       name: from
       in: query
       required: false
-      description: Fecha inicial del rango de búsqueda en formato dd-MM-yyyy.
       schema:
-        $ref: '#/components/schemas/DateDdMmYyyySchema'
+        $ref: '#/components/schemas/DateIsoSchema'
 
     ToDateQuery:
       name: to
       in: query
       required: false
-      description: Fecha final del rango de búsqueda en formato dd-MM-yyyy.
       schema:
-        $ref: '#/components/schemas/DateDdMmYyyySchema'
+        $ref: '#/components/schemas/DateIsoSchema'
 
     EncodedCursorQuery:
       name: encodedCursor
@@ -328,45 +303,38 @@ components:
 
   responses:
     BadRequestError:
-      description: La solicitud es inválida o incumple las validaciones de entrada.
+      description: Bad Request
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/ErrorDto'
-          examples:
-            invalidField:
-              summary: Error de validación
-              value:
-                code: "01.02.01"
-                origin: "OWN"
-                message: "Invalid field. traceParent must not be empty"
 
     UnauthorizedError:
-      description: La solicitud no contiene credenciales válidas.
+      description: Unauthorized
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/ErrorDto'
 
     NotFoundError:
-      description: El recurso solicitado no fue encontrado.
+      description: Not Found
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/ErrorDto'
 
     InternalServerError:
-      description: Ocurrió un error interno no controlado.
+      description: Internal Server Error
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/ErrorDto'
 
   schemas:
-    ChannelIdHeaderSchema:
+    CallerNameHeaderSchema:
       type: string
-      description: Canal origen de la solicitud.
-      pattern: '^(web|app|WEB|APP)$'
+      description: Componente que realizó la invocación al servicio.
+      pattern: '^[a-zA-Z0-9._-]+$'
       example: web
 
     TraceParentHeaderSchema:
@@ -380,26 +348,31 @@ components:
       description: Identificador único del gasto.
       example: 67dd91d7e4b0d92f2f123456
 
-    UserEmailSchema:
+    GmailMessageIdSchema:
+      type: string
+      description: Identificador del mensaje de Gmail asociado al gasto, si existe.
+      example: 19cf42db92ad643c
+
+    UserCodeHeaderSchema:
       type: string
       format: email
-      description: Correo electrónico del usuario.
+      description: Identificador del usuario en formato de correo electrónico.
       example: user@example.com
+
+    RecipientSchema:
+      type: string
+      description: Texto contenido en destinatario del gasto.
+      example: CIBERTEC
 
     CommentsSchema:
       type: string
       description: Comentario asociado al gasto.
-      example: Almuerzo en oficina
+      example: Mensualidad junio
 
     CategorySchema:
       type: string
       description: Categoría principal del gasto.
-      example: FOOD
-
-    SubcategorySchema:
-      type: string
-      description: Subcategoría del gasto.
-      example: LUNCH
+      example: ESTUDIOS
 
     SourceSchema:
       type: string
@@ -411,17 +384,11 @@ components:
       description: Cursor codificado para continuar la paginación.
       example: eyJpZCI6IjY3ZGQ5MWQ3ZTRiMGQ5MmYyZjEyMzQ1NiJ9
 
-    DateDdMmYyyySchema:
+    DateIsoSchema:
       type: string
-      description: Fecha en formato dd-MM-yyyy.
-      pattern: '^(0[1-9]|[12][0-9]|3[01])-(0[1-9]|1[0-2])-[12]\d{3}$'
-      example: 19-03-2026
-
-    DateDdMmYyyyOrIso8601Schema:
-      type: string
-      description: Fecha en formato dd-MM-yyyy o timestamp ISO-8601.
-      pattern: '^((0[1-9]|[12][0-9]|3[01])-(0[1-9]|1[0-2])-[12]\d{3}|\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{1,9})?(Z|[+-]\d{2}:\d{2}))$'
-      example: 2026-03-19T15:30:00Z
+      description: Fecha en formato ISO-8601.
+      format: date-time
+      example: 2026-03-28T20:25:00Z
 
     CurrencyCodeSchema:
       type: string
@@ -448,13 +415,11 @@ components:
         - amount
       properties:
         userEmail:
-          $ref: '#/components/schemas/UserEmailSchema'
+          $ref: '#/components/schemas/UserCodeHeaderSchema'
         gmailMessageId:
-          type: string
-          description: Identificador del mensaje de Gmail asociado al gasto, si existe.
-          example: 19cf42db92ad643c
+          $ref: '#/components/schemas/GmailMessageIdSchema'
         date:
-          $ref: '#/components/schemas/DateDdMmYyyyOrIso8601Schema'
+          $ref: '#/components/schemas/DateIsoSchema'
         detail:
           $ref: '#/components/schemas/ExpenseSaveDetail'
         currency:
@@ -470,10 +435,10 @@ components:
       properties:
         category:
           $ref: '#/components/schemas/CategorySchema'
-        subcategory:
-          $ref: '#/components/schemas/SubcategorySchema'
         comments:
           $ref: '#/components/schemas/CommentsSchema'
+        recipient:
+          $ref: '#/components/schemas/RecipientSchema'
         source:
           $ref: '#/components/schemas/SourceSchema'
 
@@ -487,7 +452,7 @@ components:
         - amount
       properties:
         date:
-          $ref: '#/components/schemas/DateDdMmYyyySchema'
+          $ref: '#/components/schemas/DateIsoSchema'
         detail:
           $ref: '#/components/schemas/ExpenseUpdateDetail'
         currency:
@@ -504,10 +469,10 @@ components:
       properties:
         category:
           $ref: '#/components/schemas/CategorySchema'
-        subcategory:
-          $ref: '#/components/schemas/SubcategorySchema'
         comments:
           $ref: '#/components/schemas/CommentsSchema'
+        recipient:
+          $ref: '#/components/schemas/RecipientSchema'
 
     ExpenseSaveResponseDto:
       type: object
@@ -536,6 +501,8 @@ components:
       properties:
         id:
           $ref: '#/components/schemas/ExpenseIdSchema'
+        gmailMessageId:
+          $ref: '#/components/schemas/GmailMessageIdSchema'
         date:
           $ref: '#/components/schemas/ExpenseResponseDate'
         detail:
@@ -578,10 +545,10 @@ components:
       properties:
         category:
           $ref: '#/components/schemas/CategorySchema'
-        subcategory:
-          $ref: '#/components/schemas/SubcategorySchema'
         comments:
           $ref: '#/components/schemas/CommentsSchema'
+        recipient:
+          $ref: '#/components/schemas/RecipientSchema'
         source:
           $ref: '#/components/schemas/SourceSchema'
 
@@ -599,21 +566,17 @@ components:
     ErrorDto:
       type: object
       description: Estructura estándar de error de la API.
-      required:
-        - origin
-        - code
-        - message
       properties:
         origin:
           $ref: '#/components/schemas/ErrorOrigin'
         code:
           type: string
           description: Código funcional o técnico del error.
-          example: 01.02.01
+          example: Default
         message:
           type: string
-          description: Descripción resumida del error.
-          example: Invalid field. traceParent must not be empty
+          description: Descripción del error.
+          example: No hemos podido realizar tu operación. Estamos trabajando para solucionar el inconveniente.
 
     ErrorOrigin:
       type: string
