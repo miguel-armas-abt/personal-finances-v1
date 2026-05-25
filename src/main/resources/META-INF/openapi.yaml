@@ -174,7 +174,7 @@ paths:
               $ref: '#/components/schemas/ImportExpenseCsvRequest'
       responses:
         '201':
-          description: Archivo CSV importado correctamente.
+          description: Created
         '400':
           $ref: '#/components/responses/BadRequestError'
         '401':
@@ -201,23 +201,24 @@ paths:
         - $ref: '#/components/parameters/ToDateQuery'
       responses:
         '200':
-          description: Archivo CSV generado correctamente.
+          description: Ok
           headers:
             Content-Disposition:
-              description: Nombre sugerido del archivo descargable.
               schema:
                 type: string
-                example: attachment; filename="expenses_20260319_201530.csv"
+                example: attachment; filename="expenses-25-05-2026.csv"
             Content-Type:
-              description: Tipo de contenido devuelto por el endpoint.
               schema:
                 type: string
+                format: binary
                 example: text/csv; charset=UTF-8
           content:
             text/csv:
               schema:
                 type: string
-                format: binary
+              example: |
+                gmailMessageId,date,source,currency,amount,category,comments,recipient
+                19d17bf0788578d2,2026-03-22T22:51:03Z,BBVA_DEBIT_CARD,PEN,20.40,,,REAL PLAZA PURUCH
         '400':
           $ref: '#/components/responses/BadRequestError'
         '401':
