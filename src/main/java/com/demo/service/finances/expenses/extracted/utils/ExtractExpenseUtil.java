@@ -1,6 +1,6 @@
 package com.demo.service.finances.expenses.extracted.utils;
 
-import com.demo.commons.constants.Symbol;
+import com.demo.commons.constants.Strings;
 import com.demo.service.commons.repository.gmail.wrapper.response.MessageContentResponseWrapper;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -34,7 +34,7 @@ public class ExtractExpenseUtil {
 
   public static String toPlainText(String html) {
     return MULTIPLE_SPACES.matcher(Jsoup.parse(html).text())
-        .replaceAll(Symbol.SPACE)
+        .replaceAll(Strings.SPACE)
         .trim();
   }
 }

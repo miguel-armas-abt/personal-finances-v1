@@ -1,6 +1,6 @@
 package com.demo.service.finances.user.activity.mapper;
 
-import com.demo.commons.config.mapper.MappingConfig;
+import com.demo.commons.config.MappingConfig;
 import com.demo.service.finances.user.activity.dto.response.UserActivityResponseDto;
 import com.demo.service.finances.user.activity.repository.entity.UserActivityEntity;
 import org.mapstruct.Mapper;

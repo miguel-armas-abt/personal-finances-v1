@@ -1,8 +1,0 @@
-configuration:
-  rest-clients:
-    gmail:
-      request:
-        endpoint: ${GMAIL_ENDPOINT:https://gmail.googleapis.com/gmail/v1/}
-    exchange-rate:
-      request:
-        endpoint: ${EXCHANGE_RATE_ENDPOINT:https://api.frankfurter.dev/v2/}

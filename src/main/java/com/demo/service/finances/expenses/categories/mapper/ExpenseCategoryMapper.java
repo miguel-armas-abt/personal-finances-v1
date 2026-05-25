@@ -1,6 +1,6 @@
 package com.demo.service.finances.expenses.categories.mapper;
 
-import com.demo.commons.config.mapper.MappingConfig;
+import com.demo.commons.config.MappingConfig;
 import com.demo.service.commons.enums.Currency;
 import com.demo.service.finances.expenses.categories.dto.request.ExpenseCategoryRequestDto;
 import com.demo.service.finances.expenses.categories.dto.response.ExpenseCategoryResponseDto;

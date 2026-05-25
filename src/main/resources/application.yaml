@@ -19,47 +19,34 @@ quarkus:
     database: personalManagement
 
   rest-client:
+    logging:
+      scope: request-response
+      body-limit: 4096
+
     gmail:
-      url: ${configuration.rest-clients.gmail.request.endpoint}
+      url: ${GMAIL_ENDPOINT}
       verify-host: false
+      connect-timeout: 850
+      read-timeout: 4500
+      headers:
+        Content-Type: application/json
+
     exchange-rate:
-      url: ${configuration.rest-clients.exchange-rate.request.endpoint}
+      url: ${EXCHANGE_RATE_ENDPOINT}
       verify-host: false
+      connect-timeout: 850
+      read-timeout: 4500
+      headers:
+        Content-Type: application/json
+
+org:
+  eclipse:
+    microprofile:
+      rest:
+        client:
+          propagateHeaders: trace-parent, caller-name, Authorization, request-date
 
 configuration:
-  error-messages:
-    Default: No hemos podido realizar tu operación. Estamos trabajando para solucionar el inconveniente.
-
-  rest-clients:
-    gmail:
-      request:
-        endpoint: ${GMAIL_ENDPOINT}
-        headers:
-          provided:
-            Content-Type: application/json
-          forwarded:
-            Authorization: Authorization
-          auto-generated:
-            timestamp: TIMESTAMP
-          tracing:
-            traceParent: TRACE_PARENT
-      performance:
-        timeout: GOOD
-        concurrency: MEDIUM
-
-    exchange-rate:
-      request:
-        endpoint: ${EXCHANGE_RATE_ENDPOINT}
-        headers:
-          provided:
-            Content-Type: application/json
-          auto-generated:
-            timestamp: TIMESTAMP
-          tracing:
-            traceParent: TRACE_PARENT
-      performance:
-        timeout: GOOD
-        concurrency: MEDIUM
 
   features:
     gmail-messages:

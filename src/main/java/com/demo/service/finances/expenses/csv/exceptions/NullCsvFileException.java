@@ -1,12 +1,12 @@
 package com.demo.service.finances.expenses.csv.exceptions;
 
-import com.demo.commons.errors.exceptions.GenericException;
+import com.demo.commons.error.exceptions.GenericException;
 
 import static jakarta.ws.rs.core.Response.Status.BAD_REQUEST;
 
 public class NullCsvFileException extends GenericException {
 
-  public static final String ERROR_CODE = "00.00.01";
+  public static final String ERROR_CODE = "0013";
 
   public NullCsvFileException() {
     super(

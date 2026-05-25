@@ -1,12 +1,12 @@
 package com.demo.service.finances.expenses.crud.exceptions;
 
-import com.demo.commons.errors.exceptions.GenericException;
+import com.demo.commons.error.exceptions.GenericException;
 
 import static jakarta.ws.rs.core.Response.Status.BAD_REQUEST;
 
 public class InvalidDateException extends GenericException {
 
-  public static final String ERROR_CODE = "00.00.05";
+  public static final String ERROR_CODE = "0006";
 
   public InvalidDateException(String date) {
     super(

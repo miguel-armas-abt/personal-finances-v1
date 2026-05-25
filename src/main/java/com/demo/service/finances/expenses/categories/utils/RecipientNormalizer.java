@@ -1,6 +1,6 @@
 package com.demo.service.finances.expenses.categories.utils;
 
-import com.demo.commons.constants.Symbol;
+import com.demo.commons.constants.Strings;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
@@ -15,7 +15,7 @@ public class RecipientNormalizer {
     return Optional.ofNullable(value)
         .map(v -> Normalizer.normalize(v, Normalizer.Form.NFD)
             .replaceAll("\\p{M}", StringUtils.EMPTY)
-            .replaceAll("\\s+", Symbol.SPACE)
+            .replaceAll("\\s+", Strings.SPACE)
             .trim())
         .orElse(StringUtils.EMPTY);
   }

@@ -1,6 +1,6 @@
 package com.demo.service.finances.expenses.crud.mapper;
 
-import com.demo.commons.config.mapper.MappingConfig;
+import com.demo.commons.config.MappingConfig;
 import com.demo.service.commons.enums.Currency;
 import com.demo.service.commons.utils.DateUtil;
 import com.demo.service.finances.expenses.crud.dto.params.ExpenseQueryParams;

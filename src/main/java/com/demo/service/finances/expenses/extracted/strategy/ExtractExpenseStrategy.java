@@ -1,6 +1,6 @@
 package com.demo.service.finances.expenses.extracted.strategy;
 
-import com.demo.commons.constants.Symbol;
+import com.demo.commons.constants.Strings;
 import com.demo.service.commons.enums.Currency;
 import com.demo.service.commons.repository.gmail.wrapper.response.MessageContentResponseWrapper;
 import com.demo.service.commons.utils.DateUtil;
@@ -66,7 +66,7 @@ public interface ExtractExpenseStrategy {
     }
 
     String currencySymbol = matcher.group(1);
-    String amountString = matcher.group(2).replace(Symbol.COMMA, Symbol.DOT);
+    String amountString = matcher.group(2).replace(Strings.COMMA, Strings.DOT);
     BigDecimal amount = new BigDecimal(amountString);
     String currency = Currency.parseFromSymbol(currencySymbol).name();
     return new AmountAndCurrency(amount, currency);

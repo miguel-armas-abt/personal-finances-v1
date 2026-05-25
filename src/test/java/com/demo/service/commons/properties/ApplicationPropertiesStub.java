@@ -1,14 +1,11 @@
 package com.demo.service.commons.properties;
 
 import com.demo.commons.properties.ProjectType;
-import com.demo.commons.properties.logging.LoggingTemplate;
-import com.demo.commons.properties.restclient.RestClient;
+import com.demo.commons.properties.error.ErrorProperties;
+import com.demo.commons.properties.rest.RestProperties;
 import com.demo.service.commons.properties.features.FeatureProperties;
 import com.demo.service.commons.properties.features.FeaturePropertiesStub;
 import lombok.Data;
-
-import java.util.Map;
-import java.util.Optional;
 
 @Data
 public class ApplicationPropertiesStub implements ApplicationProperties {
@@ -21,22 +18,17 @@ public class ApplicationPropertiesStub implements ApplicationProperties {
   }
 
   @Override
-  public Optional<ProjectType> projectType() {
-    return Optional.empty();
+  public ProjectType projectType() {
+    return ProjectType.BACKEND;
   }
 
   @Override
-  public Optional<LoggingTemplate> logging() {
-    return Optional.empty();
+  public ErrorProperties error() {
+    return null;
   }
 
   @Override
-  public Map<String, String> errorMessages() {
-    return Map.of();
-  }
-
-  @Override
-  public Map<String, RestClient> restClients() {
-    return Map.of();
+  public RestProperties rest() {
+    return null;
   }
 }

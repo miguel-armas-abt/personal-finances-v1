@@ -1,7 +1,5 @@
 package com.demo.service.commons.repository.gmail;
 
-import com.demo.commons.interceptor.restclient.RestClientRequestInterceptor;
-import com.demo.commons.interceptor.restclient.RestClientResponseInterceptor;
 import com.demo.service.commons.repository.gmail.wrapper.response.MessageContentResponseWrapper;
 import com.demo.service.commons.repository.gmail.wrapper.response.MessageResponseWrapper;
 import io.smallrye.mutiny.Uni;
@@ -11,15 +9,10 @@ import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
-import org.eclipse.microprofile.rest.client.annotation.RegisterClientHeaders;
-import org.eclipse.microprofile.rest.client.annotation.RegisterProvider;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 
 @Path("/users/me/messages")
 @RegisterRestClient(configKey = "gmail")
-@RegisterClientHeaders(GmailHeaderFactory.class)
-@RegisterProvider(RestClientRequestInterceptor.class)
-@RegisterProvider(RestClientResponseInterceptor.class)
 @Produces(MediaType.APPLICATION_JSON)
 public interface GmailRepository {
 

@@ -1,6 +1,6 @@
 package com.demo.service.finances.expenses.extracted.mapper;
 
-import com.demo.commons.config.mapper.MappingConfig;
+import com.demo.commons.config.MappingConfig;
 import com.demo.service.finances.expenses.categories.dto.response.ExpenseCategoryResponseDto;
 import com.demo.service.finances.expenses.categories.utils.ExpenseCategoryMatcher;
 import com.demo.service.finances.expenses.extracted.dto.response.ExtractExpenseResponseDto;

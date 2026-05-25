@@ -1,6 +1,6 @@
 package com.demo.service.finances.expenses.extracted.strategy.bbva;
 
-import com.demo.commons.constants.Symbol;
+import com.demo.commons.constants.Strings;
 import com.demo.service.commons.enums.Currency;
 import com.demo.service.commons.utils.DateUtil;
 import com.demo.service.finances.expenses.extracted.strategy.ExtractExpenseStrategy;
@@ -57,7 +57,7 @@ public class BBVADebitCardStrategy implements ExtractExpenseStrategy {
       return new AmountAndCurrency(BigDecimal.ZERO, Currency.UNKNOWN.name());
     }
 
-    String amountString = matcher.group(1).replace(Symbol.COMMA, Symbol.DOT);
+    String amountString = matcher.group(1).replace(Strings.COMMA, Strings.DOT);
     BigDecimal amount = new BigDecimal(amountString);
     String currencyCode = matcher.group(2);
     String currency = Currency.parseFromCode(currencyCode).name();
@@ -75,7 +75,7 @@ public class BBVADebitCardStrategy implements ExtractExpenseStrategy {
 
     String datePart = matcher.group(1);
     String timePart = matcher.group(2);
-    String rawDateTime = datePart + Symbol.SPACE + timePart;
+    String rawDateTime = datePart + Strings.SPACE + timePart;
 
     LocalDateTime dateTime = LocalDateTime.parse(rawDateTime, getDateFormatter());
     return dateTime

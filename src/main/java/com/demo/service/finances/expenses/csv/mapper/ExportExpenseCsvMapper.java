@@ -1,6 +1,6 @@
 package com.demo.service.finances.expenses.csv.mapper;
 
-import com.demo.commons.config.mapper.MappingConfig;
+import com.demo.commons.config.MappingConfig;
 import com.demo.service.finances.expenses.crud.dto.request.ExpenseSaveRequestDto;
 import com.demo.service.finances.expenses.crud.dto.response.ExpenseResponseDto;
 import com.demo.service.finances.expenses.csv.dto.ExpenseCsvRowDto;

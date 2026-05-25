@@ -1,6 +1,6 @@
 package com.demo.service.commons.dto.params;
 
-import com.demo.commons.restserver.DefaultHeaders;
+import com.demo.commons.rest.server.DefaultHeaders;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.ws.rs.HeaderParam;
@@ -15,7 +15,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class AppHeaders extends DefaultHeaders {
 
-  public static final String USER_CODE = "userCode";
+  public static final String USER_CODE = "user-code";
 
   @HeaderParam("Authorization")
   @NotBlank
