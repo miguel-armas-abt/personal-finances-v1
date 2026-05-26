@@ -1,4 +1,4 @@
-package com.demo.service.expenses.crud.rest;
+package com.demo.service.expenses;
 
 import com.demo.service.commons.dto.params.AppHeaders;
 import com.demo.service.expenses.crud.dto.params.ExpenseSearchParams;

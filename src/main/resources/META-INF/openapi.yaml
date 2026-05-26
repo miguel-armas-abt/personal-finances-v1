@@ -8,7 +8,7 @@ info:
 tags:
   - name: Expenses
   - name: CSV Expenses
-  - name: Categories
+  - name: Expense Categories
 
 paths:
   /poc/personal-finances/v1/expenses:
@@ -20,6 +20,7 @@ paths:
         Buscar gastos del usuario aplicando filtros opcionales y paginación basada en cursor.
       operationId: searchExpenses
       parameters:
+        - $ref: '#/components/parameters/AuthorizationHeader'
         - $ref: '#/components/parameters/CallerNameHeader'
         - $ref: '#/components/parameters/TraceParentHeader'
         - $ref: '#/components/parameters/UserCodeHeader'
@@ -87,6 +88,7 @@ paths:
       description: Actualizar un gasto existente identificado por su id.
       operationId: updateExpense
       parameters:
+        - $ref: '#/components/parameters/AuthorizationHeader'
         - $ref: '#/components/parameters/CallerNameHeader'
         - $ref: '#/components/parameters/TraceParentHeader'
         - $ref: '#/components/parameters/UserCodeHeader'
@@ -141,6 +143,7 @@ paths:
         Ejecuta un proceso de refresco de gastos para el correo electrónico indicado.
       operationId: refreshExpenses
       parameters:
+        - $ref: '#/components/parameters/AuthorizationHeader'
         - $ref: '#/components/parameters/CallerNameHeader'
         - $ref: '#/components/parameters/TraceParentHeader'
         - $ref: '#/components/parameters/UserCodeHeader'
@@ -163,6 +166,7 @@ paths:
         Importa gastos para un usuario a partir de un archivo CSV enviado en multipart/form-data.
       operationId: importCsv
       parameters:
+        - $ref: '#/components/parameters/AuthorizationHeader'
         - $ref: '#/components/parameters/CallerNameHeader'
         - $ref: '#/components/parameters/TraceParentHeader'
         - $ref: '#/components/parameters/UserCodeHeader'
@@ -191,6 +195,7 @@ paths:
         Exporta los gastos del usuario en formato CSV aplicando filtros opcionales.
       operationId: exportCsv
       parameters:
+        - $ref: '#/components/parameters/AuthorizationHeader'
         - $ref: '#/components/parameters/CallerNameHeader'
         - $ref: '#/components/parameters/TraceParentHeader'
         - $ref: '#/components/parameters/UserCodeHeader'
@@ -215,17 +220,65 @@ paths:
           content:
             text/csv:
               schema:
-                type: string
-              example: |
-                gmailMessageId,date,source,currency,amount,category,comments,recipient
-                19d17bf0788578d2,2026-03-22T22:51:03Z,BBVA_DEBIT_CARD,PEN,20.40,,,REAL PLAZA PURUCH
+                $ref: '#/components/schemas/ExpenseCsvSchema'
         '400':
           $ref: '#/components/responses/BadRequestError'
         '401':
           $ref: '#/components/responses/UnauthorizedError'
         '500':
           $ref: '#/components/responses/InternalServerError'
-
+  /poc/personal-finances/v1/expense-categories:
+    post:
+      tags:
+        - Expense Categories
+      summary: Registrar o actualizar categorías de gastos
+      description: |
+        Registrar o actualizar las categorías configuradas para un usuario.
+      operationId: updateExpenseCategories
+      parameters:
+        - $ref: '#/components/parameters/AuthorizationHeader'
+        - $ref: '#/components/parameters/CallerNameHeader'
+        - $ref: '#/components/parameters/TraceParentHeader'
+        - $ref: '#/components/parameters/UserCodeHeader'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExpenseCategoryRequestDto'
+      responses:
+        '204':
+          description: No Content
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    get:
+      tags:
+        - Expense Categories
+      summary: Obtener categorías configuradas
+      description: |
+        Obtiene todas las categorías configuradas para el usuario.
+      operationId: findAllCategories
+      parameters:
+        - $ref: '#/components/parameters/CallerNameHeader'
+        - $ref: '#/components/parameters/TraceParentHeader'
+        - $ref: '#/components/parameters/UserCodeHeader'
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExpenseCategoryResponseDto'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
 components:
   parameters:
     CallerNameHeader:
@@ -241,6 +294,13 @@ components:
       required: true
       schema:
         $ref: '#/components/schemas/TraceParentHeaderSchema'
+
+    AuthorizationHeader:
+      name: Authorization
+      in: header
+      required: true
+      schema:
+        $ref: '#/components/schemas/AuthorizationHeaderSchema'
 
     UserCodeHeader:
       name: user-code
@@ -344,6 +404,11 @@ components:
       pattern: '^[0-9A-Fa-f]{2}-[0-9A-Fa-f]{32}-[0-9A-Fa-f]{16}-[0-9A-Fa-f]{2}$'
       example: 00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-00
 
+    AuthorizationHeaderSchema:
+      type: string
+      description: Token JWT de autenticación.
+      example: Bearer <access-token>
+
     ExpenseIdSchema:
       type: string
       description: Identificador único del gasto.
@@ -403,7 +468,37 @@ components:
       format: bigdecimal
       exclusiveMinimum: true
       minimum: 0
-      example: 25.50
+      example: 450.50
+
+    ExpenseCsvSchema:
+      type: string
+      format: binary
+      description: |
+        Representación de los registros de gastos en formato csv.
+        ```
+        gmailMessageId,date,source,currency,amount,category,comments,recipient
+        19d17bf0788578d2,2026-03-22T22:51:03Z,BBVA_PLIN,PEN,20.50,ESTUDIOS,Mensualidad junio,CIBERTEC INST
+        ```
+      example: |
+        gmailMessageId,date,source,currency,amount,category,comments,recipient
+        19d17bf0788578d2,2026-03-22T22:51:03Z,BBVA_PLIN,PEN,20.50,ESTUDIOS,Mensualidad junio,CIBERTEC INST
+
+    CategoryPatternSchema:
+      type: string
+      description: Tipo de patrón utilizado para identificar destinatarios.
+      enum:
+        - CONTAINS
+        - STARTS_WITH
+        - ENDS_WITH
+        - REGEX
+      example: CONTAINS
+
+    CategoryRecipientPatternSchema:
+      type: string
+      description: |
+        Texto incluido en el nombre del beneficiario del gasto.
+        Por ejemplo: 'CIBERTEC INSTIT' → 'CIBERTEC'
+      example: CIBERTEC
 
     ExpenseSaveRequestDto:
       type: object
@@ -555,18 +650,105 @@ components:
 
     ImportExpenseCsvRequest:
       type: object
-      description: Archivo CSV a importar.
       required:
         - file
       properties:
         file:
+          $ref: '#/components/schemas/ExpenseCsvSchema'
+
+    ExpenseCategoryRequestDto:
+      type: object
+      properties:
+        currency:
+          $ref: '#/components/schemas/CurrencyCodeSchema'
+        categories:
+          type: array
+          items:
+            $ref: '#/components/schemas/ExpenseCategoryRequest'
+
+    ExpenseCategoryRequest:
+      type: object
+      required:
+        - name
+        - limit
+      properties:
+        name:
+          $ref: '#/components/schemas/CategorySchema'
+        limit:
+          $ref: '#/components/schemas/PositiveAmountSchema'
+        recipientPatterns:
+          type: array
+          items:
+            $ref: '#/components/schemas/ExpenseCategoryRecipientPatternRequest'
+
+    ExpenseCategoryRecipientPatternRequest:
+      type: object
+      required:
+        - code
+        - value
+      properties:
+        code:
+          $ref: '#/components/schemas/CategoryPatternSchema'
+        value:
+          $ref: '#/components/schemas/CategoryRecipientPatternSchema'
+
+    ExpenseCategoryResponseDto:
+      type: object
+      properties:
+        currency:
+          $ref: '#/components/schemas/ExpenseCategoryCurrency'
+        categories:
+          type: array
+          items:
+            $ref: '#/components/schemas/ExpenseCategoryResponse'
+
+    ExpenseCategoryCurrency:
+      type: object
+      properties:
+        code:
+          $ref: '#/components/schemas/CurrencyCodeSchema'
+        symbol:
           type: string
-          format: binary
-          description: Archivo CSV con los gastos a importar.
+          example: S/
+
+    ExpenseCategoryResponse:
+      type: object
+      properties:
+        name:
+          $ref: '#/components/schemas/CategorySchema'
+        limit:
+          $ref: '#/components/schemas/ExpenseCategoryLimit'
+        recipientPatterns:
+          type: array
+          items:
+            $ref: '#/components/schemas/ExpenseCategoryRecipientPatternResponse'
+
+    ExpenseCategoryRecipientPatternResponse:
+      type: object
+      properties:
+        code:
+          $ref: '#/components/schemas/CategoryPatternSchema'
+        value:
+          $ref: '#/components/schemas/CategoryRecipientPatternSchema'
+
+    ExpenseCategoryLimit:
+      type: object
+
+      properties:
+        amount:
+          $ref: '#/components/schemas/PositiveAmountSchema'
+        isExceeded:
+          type: boolean
+          description: Indica si el límite fue excedido.
+          example: false
+        balance:
+          type: number
+          format: bigdecimal
+          description: Monto restante disponible.
+          example: 155.50
 
     ErrorDto:
       type: object
-      description: Estructura estándar de error de la API.
       properties:
         origin:
           $ref: '#/components/schemas/ErrorOrigin'

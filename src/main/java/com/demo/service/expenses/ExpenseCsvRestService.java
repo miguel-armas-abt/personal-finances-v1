@@ -1,4 +1,4 @@
-package com.demo.service.expenses.csv.rest;
+package com.demo.service.expenses;
 
 import com.demo.service.commons.dto.params.AppHeaders;
 import com.demo.service.expenses.crud.dto.params.ExpenseQueryParams;

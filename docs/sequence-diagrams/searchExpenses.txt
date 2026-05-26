@@ -1,0 +1,18 @@
+participant frontend
+participant personal-finances-v1
+participant mongo-db
+
+frontend->personal-finances-v1: GET /expenses (search criteria params)
+
+personal-finances-v1->mongo-db: Query expenses by filters
+
+alt is pagination cursor provided
+    personal-finances-v1->personal-finances-v1: Decode cursor
+    personal-finances-v1->mongo-db: Apply cursor condition (continuation query)
+end
+
+mongo-db-->personal-finances-v1: Expenses list
+
+personal-finances-v1->personal-finances-v1: Apply pagination
+
+personal-finances-v1-->frontend: 200 OK (expenses + cursor)

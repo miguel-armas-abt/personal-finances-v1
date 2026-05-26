@@ -1,4 +1,4 @@
-package com.demo.service.expenses.categories.rest;
+package com.demo.service.expenses;
 
 import com.demo.service.commons.dto.params.AppHeaders;
 import com.demo.service.expenses.categories.dto.request.ExpenseCategoryRequestDto;
