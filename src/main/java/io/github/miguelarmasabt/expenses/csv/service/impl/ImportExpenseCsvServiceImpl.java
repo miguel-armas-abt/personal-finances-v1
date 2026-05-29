@@ -1,0 +1,85 @@
+package io.github.miguelarmasabt.expenses.csv.service.impl;
+
+import io.github.miguelarmasabt.commons.config.CsvConfig;
+import io.github.miguelarmasabt.commons.properties.ApplicationProperties;
+import io.github.miguelarmasabt.expenses.crud.repository.entity.ExpenseEntity;
+import io.github.miguelarmasabt.validations.BodyValidator;
+import io.github.miguelarmasabt.expenses.crud.mapper.ExpenseSaveMapper;
+import io.github.miguelarmasabt.expenses.crud.repository.ExpenseRepository;
+import io.github.miguelarmasabt.expenses.csv.dto.ExpenseCsvRowDto;
+import io.github.miguelarmasabt.expenses.csv.exceptions.CsvReadException;
+import io.github.miguelarmasabt.expenses.csv.helper.ImportExpenseCsvValidator;
+import io.github.miguelarmasabt.expenses.csv.helper.ImportExpenseRowProcessor;
+import io.github.miguelarmasabt.expenses.csv.mapper.ExportExpenseCsvMapper;
+import io.github.miguelarmasabt.expenses.csv.service.ImportExpenseCsvService;
+import com.univocity.parsers.csv.CsvParser;
+import com.univocity.parsers.csv.CsvParserSettings;
+import io.quarkus.mongodb.panache.common.reactive.Panache;
+import io.smallrye.mutiny.Multi;
+import io.smallrye.mutiny.Uni;
+import io.smallrye.mutiny.infrastructure.Infrastructure;
+import jakarta.enterprise.context.ApplicationScoped;
+import lombok.RequiredArgsConstructor;
+import org.jboss.resteasy.reactive.multipart.FileUpload;
+
+import java.io.IOException;
+import java.io.Reader;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.util.List;
+
+@RequiredArgsConstructor
+@ApplicationScoped
+public class ImportExpenseCsvServiceImpl implements ImportExpenseCsvService {
+
+  private final ExpenseRepository expenseRepository;
+  private final ExportExpenseCsvMapper csvMapper;
+  private final ExpenseSaveMapper saveMapper;
+  private final BodyValidator bodyValidator;
+  private final ApplicationProperties properties;
+
+  @Override
+  public Uni<Void> importCsv(String userCode, FileUpload file) {
+    return Uni.createFrom()
+        .item(() -> parseAndValidateRows(userCode, file))
+        .runSubscriptionOn(Infrastructure.getDefaultWorkerPool())
+        .onItem().transformToMulti(Multi.createFrom()::iterable)
+        .onItem().transform(csvMapper::toSaveRequest)
+        .onItem().transformToUniAndConcatenate(bodyValidator::validateAndGet)
+        .onItem().transform(row -> saveMapper.toEntity(userCode, row))
+        .collect().asList()
+        .flatMap(this::persistAllOrNothingInTransaction);
+  }
+
+  private List<ExpenseCsvRowDto> parseAndValidateRows(String userCode, FileUpload file) {
+    ImportExpenseCsvValidator.validateImportFile(userCode, file);
+
+    ImportExpenseRowProcessor rowProcessor = new ImportExpenseRowProcessor();
+    CsvParserSettings settings = CsvConfig.createParserSettings(rowProcessor);
+
+    try (Reader reader = Files.newBufferedReader(file.uploadedFile(), StandardCharsets.UTF_8)) {
+      CsvParser parser = new CsvParser(settings);
+      parser.parse(reader);
+
+      ImportExpenseCsvValidator.validateHeaders(rowProcessor.getHeaders());
+
+      return rowProcessor.getRows();
+    } catch (IOException exception) {
+      throw new CsvReadException(exception);
+    }
+  }
+
+  private Uni<Void> persistAllOrNothingInTransaction(List<ExpenseEntity> entities) {
+    if (entities.isEmpty()) {
+      return Uni.createFrom().voidItem();
+    }
+
+    return Panache.withTransaction(() ->
+        Multi.createFrom().iterable(entities)
+            .group().intoLists().of(properties.features().csv().imports().batchSize())
+            .onItem().transformToUniAndConcatenate(expenseRepository::saveAll)
+            .collect().last()
+            .replaceWithVoid()
+    );
+  }
+}

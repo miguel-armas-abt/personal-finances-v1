@@ -1,3 +1,6 @@
+info:
+  group-id: io.github.miguelarmasabt
+
 quarkus:
   application:
     name: personal-finances-v1
@@ -15,6 +18,32 @@ quarkus:
         pretty-print: false
   jackson:
     serialization-inclusion: non_null
+
+  openapi:
+    generator:
+      server:
+        use: apicurio
+        spec: openapi.yaml
+        input-base-dir: src/main/resources/openapi
+        base-package: ${info.group-id}.expenses.rest.server
+        use-reactive: false
+        use-bean-validation: true
+        skip-if-unchanged: false
+        patcher:
+          enabled: true
+          request-bodies:
+            saveExpense:
+              resource: ExpensesResource
+              target-class: ${info.group-id}.expenses.crud.dto.request.ExpenseSaveRequestDto
+              parameter-name: data
+            updateExpense:
+              resource: ExpensesResource
+              target-class: ${info.group-id}.expenses.crud.dto.request.ExpenseUpdateRequestDto
+              parameter-name: data
+            updateExpenseCategories:
+              resource: ExpensesResource
+              target-class: ${info.group-id}.expenses.categories.dto.request.ExpenseCategoryRequestDto
+              parameter-name: data
 
   mongodb:
     connection-string: "mongodb+srv://miguelarmasabt:l21m01j16M01L13@cluster0.t2pidzg.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0&authSource=admin"

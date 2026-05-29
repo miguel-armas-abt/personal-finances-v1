@@ -28,22 +28,13 @@
             "disableBodyPruning": true
           },
           "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{bearer-token}}",
-                  "type": "string"
-                }
-              ]
-            },
             "method": "GET",
             "header": [
               {
                 "key": "trace-parent",
                 "value": "{{traceParent}}",
-                "type": "text"
+                "type": "text",
+                "disabled": true
               },
               {
                 "key": "caller-name",
@@ -53,6 +44,11 @@
               {
                 "key": "user-code",
                 "value": "{{userCode}}",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "{{bearer-token}}",
                 "type": "text"
               }
             ],
@@ -66,7 +62,7 @@
               }
             },
             "url": {
-              "raw": "http://localhost:8080/poc/personal-finances/v1/expenses?category=PAREJA&from=2026-02-22T20:25:00Z&to=2026-02-24T20:25:00Z",
+              "raw": "http://localhost:8080/poc/personal-finances/v1/expenses",
               "protocol": "http",
               "host": [
                 "localhost"
@@ -86,7 +82,8 @@
                 },
                 {
                   "key": "category",
-                  "value": "PAREJA"
+                  "value": "PAREJA",
+                  "disabled": true
                 },
                 {
                   "key": "currency",
@@ -95,11 +92,13 @@
                 },
                 {
                   "key": "from",
-                  "value": "2026-02-22T20:25:00Z"
+                  "value": "2026-02-22T20:25:00Z",
+                  "disabled": true
                 },
                 {
                   "key": "to",
-                  "value": "2026-02-24T20:25:00Z"
+                  "value": "2026-02-24T20:25:00Z",
+                  "disabled": true
                 }
               ]
             }
@@ -122,16 +121,6 @@
             }
           ],
           "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{bearer-token}}",
-                  "type": "string"
-                }
-              ]
-            },
             "method": "POST",
             "header": [
               {
@@ -148,11 +137,16 @@
                 "key": "user-code",
                 "value": "{{userCode}}",
                 "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "{{bearer-token}}",
+                "type": "text"
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\r\n    \"date\": \"2026-03-28T20:25:00Z\",\r\n    \"currency\": \"PEN\",\r\n    \"amount\": 25.5,\r\n    \"detail\": {\r\n        \"category\": \"TAXI\",\r\n        \"comments\": \"INDRIVE - Musa -> Viñas\",\r\n        \"recipient\": \"Carlos Alvarez\",\r\n        \"source\": \"BBVA_PLIN\"\r\n    }\r\n}",
+              "raw": "{\r\n    \"date\": \"2026-03-28T20:25:00Z\",\r\n    \"currency\": \"PEN\",\r\n    \"amount\": \"25.5\",\r\n    \"detail\": {\r\n        \"category\": \"TAXI\",\r\n        \"comments\": \"INDRIVE - Musa -> Viñas\",\r\n        \"recipient\": \"Carlos Alvarez\",\r\n        \"source\": \"BBVA_PLIN\"\r\n    }\r\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -192,16 +186,6 @@
             }
           ],
           "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{bearer-token}}",
-                  "type": "string"
-                }
-              ]
-            },
             "method": "PUT",
             "header": [
               {
@@ -217,6 +201,11 @@
               {
                 "key": "user-code",
                 "value": "{{userCode}}",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "{{bearer-token}}",
                 "type": "text"
               }
             ],
@@ -263,16 +252,6 @@
             }
           ],
           "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{bearer-token}}",
-                  "type": "string"
-                }
-              ]
-            },
             "method": "DELETE",
             "header": [
               {
@@ -288,6 +267,11 @@
               {
                 "key": "user-code",
                 "value": "{{userCode}}",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "{{bearer-token}}",
                 "type": "text"
               }
             ],
@@ -334,16 +318,6 @@
             }
           ],
           "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{bearer-token}}",
-                  "type": "string"
-                }
-              ]
-            },
             "method": "POST",
             "header": [
               {
@@ -359,6 +333,11 @@
               {
                 "key": "user-code",
                 "value": "{{userCode}}",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "{{bearer-token}}",
                 "type": "text"
               }
             ],
@@ -410,16 +389,6 @@
             }
           ],
           "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{bearer-token}}",
-                  "type": "string"
-                }
-              ]
-            },
             "method": "POST",
             "header": [
               {
@@ -435,6 +404,11 @@
               {
                 "key": "user-code",
                 "value": "{{userCode}}",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "{{bearer-token}}",
                 "type": "text"
               }
             ],
@@ -487,16 +461,6 @@
             "disableBodyPruning": true
           },
           "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{bearer-token}}",
-                  "type": "string"
-                }
-              ]
-            },
             "method": "GET",
             "header": [
               {
@@ -517,6 +481,11 @@
               {
                 "key": "user-code",
                 "value": "{{userCode}}",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "{{bearer-token}}",
                 "type": "text"
               }
             ],
@@ -580,16 +549,6 @@
             "disableBodyPruning": true
           },
           "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{bearer-token}}",
-                  "type": "string"
-                }
-              ]
-            },
             "method": "GET",
             "header": [
               {
@@ -606,6 +565,11 @@
                 "key": "user-code",
                 "value": "{{userCode}}",
                 "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "{{bearer-token}}",
+                "type": "text"
               }
             ],
             "body": {
@@ -618,7 +582,7 @@
               }
             },
             "url": {
-              "raw": "http://localhost:8080/poc/personal-finances/v1/expense-categories",
+              "raw": "http://localhost:8080/poc/personal-finances/v1/expenses/categories",
               "protocol": "http",
               "host": [
                 "localhost"
@@ -628,7 +592,8 @@
                 "poc",
                 "personal-finances",
                 "v1",
-                "expense-categories"
+                "expenses",
+                "categories"
               ]
             }
           },
@@ -650,16 +615,6 @@
             }
           ],
           "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{bearer-token}}",
-                  "type": "string"
-                }
-              ]
-            },
             "method": "POST",
             "header": [
               {
@@ -676,6 +631,11 @@
                 "key": "user-code",
                 "value": "{{userCode}}",
                 "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "{{bearer-token}}",
+                "type": "text"
               }
             ],
             "body": {
@@ -688,7 +648,7 @@
               }
             },
             "url": {
-              "raw": "http://localhost:8080/poc/personal-finances/v1/expense-categories",
+              "raw": "http://localhost:8080/poc/personal-finances/v1/expenses/categories",
               "protocol": "http",
               "host": [
                 "localhost"
@@ -698,7 +658,8 @@
                 "poc",
                 "personal-finances",
                 "v1",
-                "expense-categories"
+                "expenses",
+                "categories"
               ]
             }
           },
@@ -722,16 +683,6 @@
         }
       ],
       "request": {
-        "auth": {
-          "type": "bearer",
-          "bearer": [
-            {
-              "key": "token",
-              "value": "{{bearer-token}}",
-              "type": "string"
-            }
-          ]
-        },
         "method": "POST",
         "header": [
           {
@@ -747,6 +698,11 @@
           {
             "key": "user-code",
             "value": "{{userCode}}",
+            "type": "text"
+          },
+          {
+            "key": "Authorization",
+            "value": "{{bearer-token}}",
             "type": "text"
           }
         ],

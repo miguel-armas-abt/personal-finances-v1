@@ -1,0 +1,766 @@
+openapi: 3.1.0
+info:
+  title: Personal Finances V1
+  version: 1.0.0
+  description: |
+    API para registrar, consultar, actualizar, eliminar, refrescar e importar/exportar gastos personales.
+
+tags:
+  - name: Expenses
+  - name: CSV Expenses
+  - name: Expense Categories
+
+paths:
+  /expenses:
+    get:
+      tags:
+        - Expenses
+      summary: Buscar gastos con paginación por cursor
+      description: |
+        Buscar gastos del usuario aplicando filtros opcionales y paginación basada en cursor.
+      operationId: searchExpenses
+      x-codegen-async: true
+      parameters:
+        - $ref: '#/components/parameters/AuthorizationHeader'
+        - $ref: '#/components/parameters/CallerNameHeader'
+        - $ref: '#/components/parameters/TraceParentHeader'
+        - $ref: '#/components/parameters/UserCodeHeader'
+        - $ref: '#/components/parameters/RecipientQuery'
+        - $ref: '#/components/parameters/CategoryQuery'
+        - $ref: '#/components/parameters/CurrencyQuery'
+        - $ref: '#/components/parameters/FromDateQuery'
+        - $ref: '#/components/parameters/ToDateQuery'
+        - $ref: '#/components/parameters/EncodedCursorQuery'
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExpenseSearchResponseDto'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+    post:
+      tags:
+        - Expenses
+      summary: Registrar gasto personal
+      description: Registrar gasto personal.
+      operationId: saveExpense
+      parameters:
+        - $ref: '#/components/parameters/CallerNameHeader'
+        - $ref: '#/components/parameters/TraceParentHeader'
+        - $ref: '#/components/parameters/UserCodeHeader'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExpenseSaveRequestDto'
+      responses:
+        '201':
+          description: Created
+          headers:
+            Location:
+              description: URI relativa del recurso creado.
+              schema:
+                type: string
+                examples:
+                  - '/expenses/67dd91d7e4b0d92f2f123456'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExpenseSaveResponseDto'
+              x-codegen-returnType: java.util.concurrent.CompletionStage<jakarta.ws.rs.core.Response>
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /expenses/{expenseId}:
+    put:
+      tags:
+        - Expenses
+      summary: Actualizar gasto
+      description: Actualizar un gasto existente identificado por su id.
+      operationId: updateExpense
+      x-codegen-async: true
+      parameters:
+        - $ref: '#/components/parameters/AuthorizationHeader'
+        - $ref: '#/components/parameters/CallerNameHeader'
+        - $ref: '#/components/parameters/TraceParentHeader'
+        - $ref: '#/components/parameters/UserCodeHeader'
+        - $ref: '#/components/parameters/ExpenseIdPath'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExpenseUpdateRequestDto'
+      responses:
+        '204':
+          description: No Content
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+    delete:
+      tags:
+        - Expenses
+      summary: Eliminar gasto
+      description: Eliminar gasto existente identificado por su id.
+      operationId: deleteExpense
+      x-codegen-async: true
+      parameters:
+        - $ref: '#/components/parameters/CallerNameHeader'
+        - $ref: '#/components/parameters/TraceParentHeader'
+        - $ref: '#/components/parameters/UserCodeHeader'
+        - $ref: '#/components/parameters/ExpenseIdPath'
+      responses:
+        '204':
+          description: No Content
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /expenses/refresh:
+    post:
+      tags:
+        - Expenses
+      summary: Refrescar gastos del usuario
+      description: |
+        Ejecuta un proceso de refresco de gastos para el correo electrónico indicado.
+      operationId: refreshExpenses
+      x-codegen-async: true
+      parameters:
+        - $ref: '#/components/parameters/AuthorizationHeader'
+        - $ref: '#/components/parameters/CallerNameHeader'
+        - $ref: '#/components/parameters/TraceParentHeader'
+        - $ref: '#/components/parameters/UserCodeHeader'
+      responses:
+        '204':
+          description: No Content
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /expenses/csv/export:
+    get:
+      tags:
+        - CSV Expenses
+      summary: Exportar gastos a CSV
+      description: |
+        Exporta los gastos del usuario en formato CSV aplicando filtros opcionales.
+      operationId: exportCsv
+      parameters:
+        - $ref: '#/components/parameters/AuthorizationHeader'
+        - $ref: '#/components/parameters/CallerNameHeader'
+        - $ref: '#/components/parameters/TraceParentHeader'
+        - $ref: '#/components/parameters/UserCodeHeader'
+        - $ref: '#/components/parameters/RecipientQuery'
+        - $ref: '#/components/parameters/CategoryQuery'
+        - $ref: '#/components/parameters/CurrencyQuery'
+        - $ref: '#/components/parameters/FromDateQuery'
+        - $ref: '#/components/parameters/ToDateQuery'
+      responses:
+        '200':
+          description: Ok
+          headers:
+            Content-Disposition:
+              schema:
+                type: string
+                examples:
+                  - attachment; filename="expenses-25-05-2026.csv"
+          content:
+            text/csv:
+              schema:
+                $ref: '#/components/schemas/ExpenseCsvSchema'
+              x-codegen-returnType: org.jboss.resteasy.reactive.RestMulti<io.vertx.core.buffer.Buffer>
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /expenses/categories:
+    post:
+      tags:
+        - Expense Categories
+      summary: Registrar o actualizar categorías de gastos
+      description: |
+        Registrar o actualizar las categorías configuradas para un usuario.
+      operationId: updateExpenseCategories
+      x-codegen-async: true
+      parameters:
+        - $ref: '#/components/parameters/AuthorizationHeader'
+        - $ref: '#/components/parameters/CallerNameHeader'
+        - $ref: '#/components/parameters/TraceParentHeader'
+        - $ref: '#/components/parameters/UserCodeHeader'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExpenseCategoryRequestDto'
+      responses:
+        '204':
+          description: No Content
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    get:
+      tags:
+        - Expense Categories
+      summary: Obtener categorías configuradas
+      description: |
+        Obtiene todas las categorías configuradas para el usuario.
+      operationId: findAllCategories
+      x-codegen-async: true
+      parameters:
+        - $ref: '#/components/parameters/CallerNameHeader'
+        - $ref: '#/components/parameters/TraceParentHeader'
+        - $ref: '#/components/parameters/UserCodeHeader'
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExpenseCategoryResponseDto'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+components:
+  parameters:
+    CallerNameHeader:
+      name: caller-name
+      in: header
+      required: true
+      schema:
+        $ref: '#/components/schemas/CallerNameHeaderSchema'
+
+    TraceParentHeader:
+      name: trace-parent
+      in: header
+      required: true
+      schema:
+        $ref: '#/components/schemas/TraceParentHeaderSchema'
+
+    AuthorizationHeader:
+      name: Authorization
+      in: header
+      required: true
+      schema:
+        $ref: '#/components/schemas/AuthorizationHeaderSchema'
+
+    UserCodeHeader:
+      name: user-code
+      in: header
+      required: true
+      schema:
+        $ref: '#/components/schemas/UserCodeHeaderSchema'
+
+    ExpenseIdPath:
+      name: expenseId
+      in: path
+      required: true
+      description: Identificador único del gasto.
+      schema:
+        $ref: '#/components/schemas/ExpenseIdSchema'
+
+    RecipientQuery:
+      name: recipient
+      in: query
+      required: false
+      schema:
+        $ref: '#/components/schemas/RecipientSchema'
+
+    CategoryQuery:
+      name: category
+      in: query
+      required: false
+      description: Categoría del gasto.
+      schema:
+        $ref: '#/components/schemas/CategorySchema'
+
+    CurrencyQuery:
+      name: currency
+      in: query
+      required: false
+      description: Moneda del gasto.
+      schema:
+        $ref: '#/components/schemas/CurrencyCodeSchema'
+
+    FromDateQuery:
+      name: from
+      in: query
+      required: false
+      schema:
+        $ref: '#/components/schemas/DateIsoSchema'
+
+    ToDateQuery:
+      name: to
+      in: query
+      required: false
+      schema:
+        $ref: '#/components/schemas/DateIsoSchema'
+
+    EncodedCursorQuery:
+      name: encodedCursor
+      in: query
+      required: false
+      description: Cursor codificado para obtener la siguiente página de resultados.
+      schema:
+        $ref: '#/components/schemas/EncodedCursorSchema'
+
+  responses:
+    BadRequestError:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorDto'
+
+    UnauthorizedError:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorDto'
+
+    NotFoundError:
+      description: Not Found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorDto'
+
+    InternalServerError:
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorDto'
+
+  schemas:
+    CallerNameHeaderSchema:
+      type: string
+      description: Componente que realizó la invocación al servicio.
+      pattern: '^[a-zA-Z0-9._-]+$'
+      examples:
+        - web
+
+    TraceParentHeaderSchema:
+      type: string
+      description: Cabecera de trazabilidad distribuida.
+      pattern: '^[0-9A-Fa-f]{2}-[0-9A-Fa-f]{32}-[0-9A-Fa-f]{16}-[0-9A-Fa-f]{2}$'
+      examples:
+        - 00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-00
+
+    AuthorizationHeaderSchema:
+      type: string
+      description: Token JWT de autenticación.
+      examples:
+        - Bearer <access-token>
+
+    ExpenseIdSchema:
+      type: string
+      description: Identificador único del gasto.
+      examples:
+        - 67dd91d7e4b0d92f2f123456
+
+    GmailMessageIdSchema:
+      type: string
+      description: Identificador del mensaje de Gmail asociado al gasto, si existe.
+      examples:
+        - 19cf42db92ad643c
+
+    UserCodeHeaderSchema:
+      type: string
+      format: email
+      description: Identificador del usuario en formato de correo electrónico.
+      examples:
+        - user@example.com
+
+    RecipientSchema:
+      type: string
+      description: Texto contenido en destinatario del gasto.
+      examples:
+        - CIBERTEC
+
+    CommentsSchema:
+      type: string
+      description: Comentario asociado al gasto.
+      examples:
+        - Mensualidad junio
+
+    CategorySchema:
+      type: string
+      description: Categoría principal del gasto.
+      examples:
+        - ESTUDIOS
+
+    SourceSchema:
+      type: string
+      description: Origen o medio desde el cual se generó el gasto.
+      examples:
+        - BBVA_PLIN
+
+    EncodedCursorSchema:
+      type: string
+      description: Cursor codificado para continuar la paginación.
+      examples:
+        - eyJpZCI6IjY3ZGQ5MWQ3ZTRiMGQ5MmYyZjEyMzQ1NiJ9
+
+    DateIsoSchema:
+      type: string
+      description: Fecha en formato ISO-8601.
+      format: date-time
+      examples:
+        - 2026-03-28T20:25:00Z
+
+    CurrencyCodeSchema:
+      type: string
+      description: Código de moneda del gasto.
+      pattern: '^(PEN|USD)$'
+      examples:
+        - PEN
+
+    DecimalAmountSchema:
+      type: string
+      description: Monto decimal.
+      pattern: '^-?\d+(\.\d{1,2})?$'
+      examples:
+        - '-45.50'
+
+    PositiveAmountSchema:
+      type: string
+      description: Monto del gasto. Debe ser mayor a cero.
+      pattern: '^\d+(\.\d{1,2})?$'
+      examples:
+        - '155.50'
+
+    ExpenseCsvSchema:
+      type: string
+      format: binary
+      description: Archivo CSV exportado.
+      examples:
+        - |
+          gmailMessageId,date,source,currency,amount,category,comments,recipient
+          19d17bf0788578d2,2026-03-22T22:51:03Z,BBVA_PLIN,PEN,20.50,ESTUDIOS,Mensualidad junio,CIBERTEC INST
+
+    CategoryPatternSchema:
+      type: string
+      description: Tipo de patrón utilizado para identificar destinatarios.
+      pattern: '^(SAME_AS|START_WITH|CONTAINS|ENDS_WITH)$'
+      examples:
+        - CONTAINS
+
+    CategoryRecipientPatternSchema:
+      type: string
+      description: |
+        Texto incluido en el nombre del beneficiario del gasto.
+        Por ejemplo: 'CIBERTEC INSTIT' → 'CIBERTEC'
+      examples:
+        - CIBERTEC
+
+    ExpenseSaveRequestDto:
+      type: object
+      description: Datos requeridos para registrar un gasto.
+      required:
+        - userEmail
+        - date
+        - detail
+        - currency
+        - amount
+      properties:
+        userEmail:
+          $ref: '#/components/schemas/UserCodeHeaderSchema'
+        gmailMessageId:
+          $ref: '#/components/schemas/GmailMessageIdSchema'
+        date:
+          $ref: '#/components/schemas/DateIsoSchema'
+        detail:
+          $ref: '#/components/schemas/ExpenseSaveDetail'
+        currency:
+          $ref: '#/components/schemas/CurrencyCodeSchema'
+        amount:
+          $ref: '#/components/schemas/PositiveAmountSchema'
+
+    ExpenseSaveDetail:
+      type: object
+      description: Detalle del gasto a registrar.
+      required:
+        - source
+      properties:
+        category:
+          $ref: '#/components/schemas/CategorySchema'
+        comments:
+          $ref: '#/components/schemas/CommentsSchema'
+        recipient:
+          $ref: '#/components/schemas/RecipientSchema'
+        source:
+          $ref: '#/components/schemas/SourceSchema'
+
+    ExpenseUpdateRequestDto:
+      type: object
+      description: Datos requeridos para actualizar un gasto.
+      required:
+        - date
+        - detail
+        - currency
+        - amount
+      properties:
+        date:
+          $ref: '#/components/schemas/DateIsoSchema'
+        detail:
+          $ref: '#/components/schemas/ExpenseUpdateDetail'
+        currency:
+          $ref: '#/components/schemas/CurrencyCodeSchema'
+        amount:
+          $ref: '#/components/schemas/PositiveAmountSchema'
+
+    ExpenseUpdateDetail:
+      type: object
+      description: Detalle del gasto a actualizar.
+      required:
+        - category
+        - comments
+      properties:
+        category:
+          $ref: '#/components/schemas/CategorySchema'
+        comments:
+          $ref: '#/components/schemas/CommentsSchema'
+        recipient:
+          $ref: '#/components/schemas/RecipientSchema'
+
+    ExpenseSaveResponseDto:
+      type: object
+      description: Respuesta al registrar un gasto.
+      required:
+        - expenseId
+      properties:
+        expenseId:
+          $ref: '#/components/schemas/ExpenseIdSchema'
+
+    ExpenseSearchResponseDto:
+      type: object
+      description: Resultado paginado de la búsqueda de gastos.
+      properties:
+        expenses:
+          type: array
+          description: Lista de gastos encontrados.
+          items:
+            $ref: '#/components/schemas/ExpenseResponseDto'
+        nextCursor:
+          $ref: '#/components/schemas/EncodedCursorSchema'
+
+    ExpenseResponseDto:
+      type: object
+      description: Representación de un gasto.
+      properties:
+        id:
+          $ref: '#/components/schemas/ExpenseIdSchema'
+        gmailMessageId:
+          $ref: '#/components/schemas/GmailMessageIdSchema'
+        date:
+          $ref: '#/components/schemas/ExpenseResponseDate'
+        detail:
+          $ref: '#/components/schemas/ExpenseResponseDetail'
+        currency:
+          $ref: '#/components/schemas/ExpenseResponseCurrency'
+        amount:
+          $ref: '#/components/schemas/PositiveAmountSchema'
+
+    ExpenseResponseCurrency:
+      type: object
+      description: Datos de la moneda del gasto.
+      properties:
+        code:
+          type: string
+          description: Código de la moneda.
+          examples:
+            - PEN
+        symbol:
+          type: string
+          description: Símbolo de la moneda.
+          examples:
+            - S/
+
+    ExpenseResponseDate:
+      type: object
+      description: Fecha del gasto en formatos técnico y legible.
+      properties:
+        utc:
+          type: string
+          format: date-time
+          description: Fecha y hora en UTC.
+          examples:
+            - 2026-03-19T15:30:00Z
+        formatted:
+          type: string
+          description: Fecha formateada para visualización.
+          examples:
+            - 19 Mar 2026
+
+    ExpenseResponseDetail:
+      type: object
+      description: Detalle del gasto.
+      properties:
+        category:
+          $ref: '#/components/schemas/CategorySchema'
+        comments:
+          $ref: '#/components/schemas/CommentsSchema'
+        recipient:
+          $ref: '#/components/schemas/RecipientSchema'
+        source:
+          $ref: '#/components/schemas/SourceSchema'
+
+    ImportExpenseCsvRequest:
+      type: object
+      required:
+        - file
+      properties:
+        file:
+          type: string
+          format: binary
+
+    ExpenseCategoryRequestDto:
+      type: object
+      properties:
+        currency:
+          $ref: '#/components/schemas/CurrencyCodeSchema'
+        categories:
+          type: array
+          items:
+            $ref: '#/components/schemas/ExpenseCategoryRequest'
+
+    ExpenseCategoryRequest:
+      type: object
+      required:
+        - name
+        - limit
+      properties:
+        name:
+          $ref: '#/components/schemas/CategorySchema'
+        limit:
+          $ref: '#/components/schemas/PositiveAmountSchema'
+        recipientPatterns:
+          type: array
+          items:
+            $ref: '#/components/schemas/ExpenseCategoryRecipientPatternRequest'
+
+    ExpenseCategoryRecipientPatternRequest:
+      type: object
+      required:
+        - code
+        - value
+      properties:
+        code:
+          $ref: '#/components/schemas/CategoryPatternSchema'
+        value:
+          $ref: '#/components/schemas/CategoryRecipientPatternSchema'
+
+    ExpenseCategoryResponseDto:
+      type: object
+      properties:
+        currency:
+          $ref: '#/components/schemas/ExpenseCategoryCurrency'
+        categories:
+          type: array
+          items:
+            $ref: '#/components/schemas/ExpenseCategoryResponse'
+
+    ExpenseCategoryCurrency:
+      type: object
+      properties:
+        code:
+          $ref: '#/components/schemas/CurrencyCodeSchema'
+        symbol:
+          type: string
+          examples:
+            - S/
+
+    ExpenseCategoryResponse:
+      type: object
+      properties:
+        name:
+          $ref: '#/components/schemas/CategorySchema'
+        limit:
+          $ref: '#/components/schemas/ExpenseCategoryLimit'
+        recipientPatterns:
+          type: array
+          items:
+            $ref: '#/components/schemas/ExpenseCategoryRecipientPatternResponse'
+
+    ExpenseCategoryRecipientPatternResponse:
+      type: object
+      properties:
+        code:
+          $ref: '#/components/schemas/CategoryPatternSchema'
+        value:
+          $ref: '#/components/schemas/CategoryRecipientPatternSchema'
+
+    ExpenseCategoryLimit:
+      type: object
+
+      properties:
+        amount:
+          $ref: '#/components/schemas/PositiveAmountSchema'
+        isExceeded:
+          type: boolean
+          description: Indica si el límite fue excedido.
+          examples:
+            - false
+        balance:
+          $ref: '#/components/schemas/DecimalAmountSchema'
+
+    ErrorDto:
+      type: object
+      properties:
+        origin:
+          $ref: '#/components/schemas/ErrorOrigin'
+        code:
+          type: string
+          description: Código funcional o técnico del error.
+          examples:
+            - Default
+        message:
+          type: string
+          description: Descripción del error.
+          examples:
+            - No hemos podido realizar tu operación. Estamos trabajando para solucionar el inconveniente.
+
+    ErrorOrigin:
+      type: string
+      description: Origen del error.
+      enum:
+        - OWN
+        - PARTNER
+        - THIRD_PARTY
+      examples:
+        - OWN
