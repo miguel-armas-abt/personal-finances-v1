@@ -15,17 +15,17 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @ApplicationScoped
-public class ExtractExpenseStrategyDispatcher {
+public class BankReceiptExpenseExtractorDispatcher {
 
-  private final ExtractExpenseHelper extractExpenseHelper;
-  private final Map<String, ExtractExpenseStrategy> strategyMap;
+  private final ExpenseExtractorHelper expenseExtractorHelper;
+  private final Map<String, BankReceiptExpenseExtractorStrategy> strategyMap;
 
-  public ExtractExpenseStrategyDispatcher(ExtractExpenseHelper extractExpenseHelper,
-                                          Instance<ExtractExpenseStrategy> strategyInstances) {
-    this.extractExpenseHelper = extractExpenseHelper;
+  public BankReceiptExpenseExtractorDispatcher(ExpenseExtractorHelper expenseExtractorHelper,
+                                               Instance<BankReceiptExpenseExtractorStrategy> strategyInstances) {
+    this.expenseExtractorHelper = expenseExtractorHelper;
     this.strategyMap = strategyInstances.stream()
         .collect(Collectors.toUnmodifiableMap(
-            ExtractExpenseStrategy::supports,
+            BankReceiptExpenseExtractorStrategy::supports,
             Function.identity(),
             (left, right) -> {
               throw new DuplicatedStrategyException(left.supports());
@@ -36,10 +36,10 @@ public class ExtractExpenseStrategyDispatcher {
   public Uni<ExtractExpenseResponseDto> toDto(MessageContentResponseWrapper message) {
     GmailMessageHeaderUtil.GmailMessageHeaders headers = GmailMessageHeaderUtil.extractHeaders(message.getPayload());
 
-    String label = extractExpenseHelper.resolveLabel(headers.from(), headers.subject())
+    String label = expenseExtractorHelper.resolveLabel(headers.from(), headers.subject())
         .orElseThrow(() -> new UnsupportedExtractExpenseStrategyException(headers.from(), headers.subject()));
 
-    ExtractExpenseStrategy strategy = Optional.ofNullable(strategyMap.get(label))
+    BankReceiptExpenseExtractorStrategy strategy = Optional.ofNullable(strategyMap.get(label))
         .orElseThrow(() -> new UnsupportedExtractExpenseStrategyException(headers.from(), headers.subject()));
 
     return strategy.toDto(message);

@@ -1,13 +1,13 @@
 {
   "info": {
-    "_postman_id": "5379c96b-d5f7-474e-b9db-c876a1b50ceb",
+    "_postman_id": "d4ce288f-f7b5-41d5-89e5-e822a6165a9e",
     "name": "personal-finances-v1",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
     "_exporter_id": "13773998"
   },
   "item": [
     {
-      "name": "Expenses",
+      "name": "Expense",
       "item": [
         {
           "name": "searchExpense",
@@ -371,7 +371,7 @@
       ]
     },
     {
-      "name": "CSV Expenses",
+      "name": "Expense CSV",
       "item": [
         {
           "name": "importExpenses",
@@ -528,7 +528,7 @@
       ]
     },
     {
-      "name": "Categories",
+      "name": "Expense Category",
       "item": [
         {
           "name": "findCategories",

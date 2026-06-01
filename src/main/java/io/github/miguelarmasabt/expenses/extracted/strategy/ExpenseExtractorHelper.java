@@ -12,11 +12,11 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @ApplicationScoped
-public class ExtractExpenseHelper {
+public class ExpenseExtractorHelper {
 
   private final Map<String, List<BankReceiptRule>> receiptMap;
 
-  public ExtractExpenseHelper(ApplicationProperties properties) {
+  public ExpenseExtractorHelper(ApplicationProperties properties) {
     this.receiptMap = properties.features().bankReceipts()
         .entrySet().stream()
         .map(entry -> BankReceiptRule.builder()

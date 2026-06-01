@@ -87,7 +87,7 @@ configuration:
       format: full
 
     search-criteria:
-      limit: 20
+      page-size: 20
 
     csv:
       imports:

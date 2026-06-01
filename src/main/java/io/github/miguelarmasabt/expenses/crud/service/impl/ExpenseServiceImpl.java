@@ -60,7 +60,7 @@ public class ExpenseServiceImpl implements ExpenseService {
 
   @Override
   public Uni<ExpenseSearchResponseDto> searchExpensesByCursorPagination(String userCode, ExpenseSearchParams params) {
-    int limit = properties.features().searchCriteria().limit();
+    int pageSize = properties.features().searchCriteria().pageSize();
     ExpenseSearchCriteria searchCriteria = searchMapper.toSearchCriteria(userCode, params);
 
     CursorEncoder.Cursor cursor = null;
@@ -69,8 +69,8 @@ public class ExpenseServiceImpl implements ExpenseService {
       cursor = CursorEncoder.decode(params.getEncodedCursor());
     }
 
-    return expenseRepository.searchBySortPagination(searchCriteria, limit, cursor)
+    return expenseRepository.searchBySortPagination(searchCriteria, pageSize, cursor)
         .collect().asList()
-        .map(expenses -> searchMapper.toSearchResponseDto(expenses, limit));
+        .map(expenses -> searchMapper.toSearchResponseDto(expenses, pageSize));
   }
 }

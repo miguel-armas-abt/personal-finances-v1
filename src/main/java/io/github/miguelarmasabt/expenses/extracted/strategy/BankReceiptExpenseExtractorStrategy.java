@@ -16,10 +16,10 @@ import java.time.format.DateTimeFormatter;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public interface ExtractExpenseStrategy {
+public interface BankReceiptExpenseExtractorStrategy {
 
   String UNKNOWN = "unknown";
-  Logger log = Logger.getLogger(ExtractExpenseStrategy.class);
+  Logger log = Logger.getLogger(BankReceiptExpenseExtractorStrategy.class);
 
   String supports();
 

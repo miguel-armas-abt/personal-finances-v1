@@ -6,15 +6,15 @@ info:
     API para registrar, consultar, actualizar, eliminar, refrescar e importar/exportar gastos personales.
 
 tags:
-  - name: Expenses
-  - name: CSV Expenses
-  - name: Expense Categories
+  - name: Expense
+  - name: Expense CSV
+  - name: Expense Category
 
 paths:
   /expenses:
     get:
       tags:
-        - Expenses
+        - Expense
       summary: Buscar gastos con paginación por cursor
       description: |
         Buscar gastos del usuario aplicando filtros opcionales y paginación basada en cursor.
@@ -47,7 +47,7 @@ paths:
 
     post:
       tags:
-        - Expenses
+        - Expense
       summary: Registrar gasto personal
       description: Registrar gasto personal.
       operationId: saveExpense
@@ -86,7 +86,7 @@ paths:
   /expenses/{expenseId}:
     put:
       tags:
-        - Expenses
+        - Expense
       summary: Actualizar gasto
       description: Actualizar un gasto existente identificado por su id.
       operationId: updateExpense
@@ -117,7 +117,7 @@ paths:
 
     delete:
       tags:
-        - Expenses
+        - Expense
       summary: Eliminar gasto
       description: Eliminar gasto existente identificado por su id.
       operationId: deleteExpense
@@ -142,7 +142,7 @@ paths:
   /expenses/refresh:
     post:
       tags:
-        - Expenses
+        - Expense
       summary: Refrescar gastos del usuario
       description: |
         Ejecuta un proceso de refresco de gastos para el correo electrónico indicado.
@@ -162,10 +162,44 @@ paths:
           $ref: '#/components/responses/UnauthorizedError'
         '500':
           $ref: '#/components/responses/InternalServerError'
+
+  # /expenses/csv/import:
+  #   post:
+  #     tags:
+  #       - Expense CSV
+  #     summary: Importar gastos desde CSV
+  #     description: |
+  #       Importa gastos para un usuario a partir de un archivo CSV enviado en multipart/form-data.
+  #     operationId: importCsv
+  #     x-codegen-async: true
+  #     parameters:
+  #       - $ref: '#/components/parameters/AuthorizationHeader'
+  #       - $ref: '#/components/parameters/CallerNameHeader'
+  #       - $ref: '#/components/parameters/TraceParentHeader'
+  #       - $ref: '#/components/parameters/UserCodeHeader'
+  #     requestBody:
+  #       required: true
+  #       content:
+  #         multipart/form-data:
+  #           schema:
+  #             $ref: '#/components/schemas/ImportExpenseCsvRequest'
+  #           encoding:
+  #             file:
+  #               contentType: text/csv
+  #     responses:
+  #       '201':
+  #         description: Created
+  #       '400':
+  #         $ref: '#/components/responses/BadRequestError'
+  #       '401':
+  #         $ref: '#/components/responses/UnauthorizedError'
+  #       '500':
+  #         $ref: '#/components/responses/InternalServerError'
+
   /expenses/csv/export:
     get:
       tags:
-        - CSV Expenses
+        - Expense CSV
       summary: Exportar gastos a CSV
       description: |
         Exporta los gastos del usuario en formato CSV aplicando filtros opcionales.
@@ -203,7 +237,7 @@ paths:
   /expenses/categories:
     post:
       tags:
-        - Expense Categories
+        - Expense Category
       summary: Registrar o actualizar categorías de gastos
       description: |
         Registrar o actualizar las categorías configuradas para un usuario.
@@ -231,13 +265,14 @@ paths:
           $ref: '#/components/responses/InternalServerError'
     get:
       tags:
-        - Expense Categories
+        - Expense Category
       summary: Obtener categorías configuradas
       description: |
         Obtiene todas las categorías configuradas para el usuario.
       operationId: findAllCategories
       x-codegen-async: true
       parameters:
+        - $ref: '#/components/parameters/AuthorizationHeader'
         - $ref: '#/components/parameters/CallerNameHeader'
         - $ref: '#/components/parameters/TraceParentHeader'
         - $ref: '#/components/parameters/UserCodeHeader'

@@ -1,79 +1,155 @@
-//package io.github.miguelarmasabt.expenses;
-//
-//import io.github.miguelarmasabt.commons.dto.params.AppHeaders;
-//import io.github.miguelarmasabt.expenses.crud.dto.params.ExpenseSearchParams;
-//import io.github.miguelarmasabt.expenses.crud.dto.request.ExpenseSaveRequestDto;
-//import io.github.miguelarmasabt.expenses.crud.dto.request.ExpenseUpdateRequestDto;
-//import io.github.miguelarmasabt.expenses.crud.service.ExpenseRefreshService;
-//import io.github.miguelarmasabt.expenses.crud.service.ExpenseService;
-//import io.smallrye.mutiny.Uni;
-//import jakarta.validation.Valid;
-//import jakarta.ws.rs.BeanParam;
-//import jakarta.ws.rs.Consumes;
-//import jakarta.ws.rs.DELETE;
-//import jakarta.ws.rs.GET;
-//import jakarta.ws.rs.POST;
-//import jakarta.ws.rs.PUT;
-//import jakarta.ws.rs.Path;
-//import jakarta.ws.rs.PathParam;
-//import jakarta.ws.rs.Produces;
-//import jakarta.ws.rs.core.MediaType;
-//import jakarta.ws.rs.core.Response;
-//import lombok.RequiredArgsConstructor;
-//
-//import java.net.URI;
-//
-//@Path("/expenses")
-//@RequiredArgsConstructor
-//public class ExpenseRestService {
-//
-//  private final ExpenseService expenseService;
-//  private final ExpenseRefreshService refreshService;
-//
-//  @GET
-//  @Produces(MediaType.APPLICATION_JSON)
-//  public Uni<Response> searchExpenses(@Valid @BeanParam AppHeaders headers,
-//                                      @Valid @BeanParam ExpenseSearchParams searchParams) {
-//    return expenseService.searchExpensesByCursorPagination(headers.getUserCode(), searchParams)
-//        .map(result -> Response.ok(result).build());
-//  }
-//
-//  @POST
-//  @Produces(MediaType.APPLICATION_JSON)
-//  @Consumes(MediaType.APPLICATION_JSON)
-//  public Uni<Response> saveExpense(@Valid @BeanParam AppHeaders headers,
-//                                   @Valid ExpenseSaveRequestDto saveRequest) {
-//    return expenseService.saveExpense(headers.getUserCode(), saveRequest)
-//        .map(response -> Response.status(Response.Status.CREATED)
-//            .entity(response)
-//            .location(URI.create("/expenses/" + response.getExpenseId()))
-//            .build());
-//  }
-//
-//  @PUT
-//  @Path("/{expenseId}")
-//  @Produces(MediaType.APPLICATION_JSON)
-//  @Consumes(MediaType.APPLICATION_JSON)
-//  public Uni<Response> updateExpense(@Valid @BeanParam AppHeaders headers,
-//                                     @PathParam("expenseId") String expenseId,
-//                                     @Valid ExpenseUpdateRequestDto updateRequest) {
-//    return expenseService.updateExpense(headers.getUserCode(), expenseId, updateRequest)
-//        .replaceWith(Response.noContent().build());
-//  }
-//
-//  @DELETE()
-//  @Path("/{expenseId}")
-//  public Uni<Response> deleteExpense(@Valid @BeanParam AppHeaders headers,
-//                                     @PathParam("expenseId") String expenseId) {
-//    return expenseService.deleteExpense(headers.getUserCode(), expenseId)
-//        .replaceWith(Response.noContent().build());
-//  }
-//
-//  @POST
-//  @Path("/refresh")
-//  @Produces(MediaType.APPLICATION_JSON)
-//  public Uni<Response> refreshExpenses(@Valid @BeanParam AppHeaders headers) {
-//    return refreshService.refreshExpenses(headers.getUserCode())
-//        .map(result -> Response.noContent().build());
-//  }
-//}
+package io.github.miguelarmasabt.expenses;
+
+import io.github.miguelarmasabt.commons.dto.params.AppHeaders;
+import io.github.miguelarmasabt.expenses.categories.dto.request.ExpenseCategoryRequestDto;
+import io.github.miguelarmasabt.expenses.categories.service.ExpenseCategoryService;
+import io.github.miguelarmasabt.expenses.crud.dto.params.ExpenseQueryParams;
+import io.github.miguelarmasabt.expenses.crud.dto.params.ExpenseSearchParams;
+import io.github.miguelarmasabt.expenses.crud.dto.request.ExpenseSaveRequestDto;
+import io.github.miguelarmasabt.expenses.crud.dto.request.ExpenseUpdateRequestDto;
+import io.github.miguelarmasabt.expenses.crud.mapper.ExpenseSearchMapper;
+import io.github.miguelarmasabt.expenses.crud.service.ExpenseRefreshService;
+import io.github.miguelarmasabt.expenses.crud.service.ExpenseService;
+import io.github.miguelarmasabt.expenses.csv.service.ExportExpenseCsvService;
+import io.github.miguelarmasabt.expenses.csv.service.ImportExpenseCsvService;
+import io.github.miguelarmasabt.expenses.csv.utils.FileNameGenerator;
+import io.github.miguelarmasabt.expenses.rest.server.ExpensesResource;
+import io.github.miguelarmasabt.expenses.rest.server.beans.ExpenseCategoryResponseDto;
+import io.github.miguelarmasabt.expenses.rest.server.beans.ExpenseSearchResponseDto;
+import io.smallrye.mutiny.Uni;
+import io.vertx.core.buffer.Buffer;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.validation.Valid;
+import jakarta.ws.rs.BeanParam;
+import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.POST;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
+import lombok.RequiredArgsConstructor;
+import org.jboss.resteasy.reactive.RestForm;
+import org.jboss.resteasy.reactive.RestMulti;
+import org.jboss.resteasy.reactive.multipart.FileUpload;
+
+import java.net.URI;
+import java.util.Date;
+import java.util.concurrent.CompletionStage;
+
+@ApplicationScoped
+@RequiredArgsConstructor
+public class ExpenseRestService implements ExpensesResource {
+
+  private final ExpenseSearchMapper searchMapper;
+  private final ExpenseService expenseService;
+  private final ExpenseRefreshService refreshService;
+  private final ExportExpenseCsvService exportExpenseCsvService;
+  private final ImportExpenseCsvService importExpenseCsvService;
+  private final ExpenseCategoryService categoryService;
+
+  @Override
+  public CompletionStage<ExpenseSearchResponseDto> searchExpenses(String authorization,
+                                                                  String callerName,
+                                                                  String traceParent,
+                                                                  String userCode,
+                                                                  String recipient,
+                                                                  String category,
+                                                                  String currency,
+                                                                  Date from,
+                                                                  Date to,
+                                                                  String encodedCursor) {
+    ExpenseSearchParams params = searchMapper.toSearchParams(recipient, category, currency, from, to, encodedCursor);
+    return expenseService.searchExpensesByCursorPagination(userCode, params)
+        .subscribeAsCompletionStage();
+  }
+
+  @Override
+  public CompletionStage<Response> saveExpense(String callerName,
+                                               String traceParent,
+                                               String userCode,
+                                               ExpenseSaveRequestDto saveRequest) {
+    return expenseService.saveExpense(userCode, saveRequest)
+        .map(response -> Response.status(Response.Status.CREATED)
+            .entity(response)
+            .location(URI.create("/expenses/" + response.getExpenseId()))
+            .build())
+        .subscribeAsCompletionStage();
+  }
+
+  @Override
+  public CompletionStage<Void> updateExpense(String authorization,
+                                             String callerName,
+                                             String traceParent,
+                                             String userCode,
+                                             String expenseId,
+                                             ExpenseUpdateRequestDto updateRequest) {
+    return expenseService.updateExpense(userCode, expenseId, updateRequest)
+        .replaceWithVoid()
+        .subscribeAsCompletionStage();
+  }
+
+  @Override
+  public CompletionStage<Void> deleteExpense(String callerName,
+                                             String traceParent,
+                                             String userCode,
+                                             String expenseId) {
+    return expenseService.deleteExpense(userCode, expenseId)
+        .replaceWithVoid()
+        .subscribeAsCompletionStage();
+  }
+
+  @Override
+  public CompletionStage<Void> refreshExpenses(String authorization,
+                                               String callerName,
+                                               String traceParent,
+                                               String userCode) {
+    return refreshService.refreshExpenses(userCode)
+        .replaceWithVoid()
+        .subscribeAsCompletionStage();
+  }
+
+  @Override
+  public RestMulti<Buffer> exportCsv(String authorization,
+                                     String callerName,
+                                     String traceParent,
+                                     String userCode,
+                                     String recipient,
+                                     String category,
+                                     String currency,
+                                     Date from,
+                                     Date to) {
+    ExpenseQueryParams params = searchMapper.toQueryParams(recipient, category, currency, from, to);
+    return RestMulti.fromMultiData(exportExpenseCsvService.exportCsv(userCode, params))
+        .header("Content-Disposition", "attachment; filename=\"" + FileNameGenerator.generateFileName() + "\"")
+        .header("Content-Type", "text/csv; charset=UTF-8")
+        .build();
+  }
+
+  @POST
+  @Path("/csv/import")
+  @Consumes(MediaType.MULTIPART_FORM_DATA)
+  public Uni<Response> importCsv(@BeanParam @Valid AppHeaders headers,
+                                 @RestForm("file") FileUpload file) {
+    return importExpenseCsvService.importCsv(headers.getUserCode(), file)
+        .replaceWith(Response.status(Response.Status.CREATED).build());
+  }
+
+  @Override
+  public CompletionStage<ExpenseCategoryResponseDto> findAllCategories(String authorization,
+                                                                       String callerName,
+                                                                       String traceParent,
+                                                                       String userCode) {
+    return categoryService.findAllCategories(userCode)
+        .subscribeAsCompletionStage();
+  }
+
+  @Override
+  public CompletionStage<Void> updateExpenseCategories(String authorization,
+                                                       String callerName,
+                                                       String traceParent,
+                                                       String userCode,
+                                                       ExpenseCategoryRequestDto updateCategoryRequest) {
+    return categoryService.updateCategories(userCode, updateCategoryRequest)
+        .replaceWithVoid()
+        .subscribeAsCompletionStage();
+  }
+}

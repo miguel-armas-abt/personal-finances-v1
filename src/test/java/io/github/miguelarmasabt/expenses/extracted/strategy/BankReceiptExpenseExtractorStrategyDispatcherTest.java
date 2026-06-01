@@ -4,11 +4,11 @@ import io.github.miguelarmasabt.commons.properties.ApplicationProperties;
 import io.github.miguelarmasabt.commons.properties.ApplicationPropertiesStub;
 import io.github.miguelarmasabt.commons.repository.gmail.wrapper.response.MessageContentResponseWrapper;
 import io.github.miguelarmasabt.expenses.extracted.dto.response.ExtractExpenseResponseDto;
-import io.github.miguelarmasabt.expenses.extracted.strategy.bbva.BBVADebitCardStrategy;
-import io.github.miguelarmasabt.expenses.extracted.strategy.bbva.BBVAPlinMerchantQRStrategy;
-import io.github.miguelarmasabt.expenses.extracted.strategy.bbva.BBVAPlinStrategy;
-import io.github.miguelarmasabt.expenses.extracted.strategy.bbva.BBVAServicePaymentStrategy;
-import io.github.miguelarmasabt.expenses.extracted.strategy.ibk.IBKPlinStrategy;
+import io.github.miguelarmasabt.expenses.extracted.strategy.bbva.BBVADebitCardExtractorStrategy;
+import io.github.miguelarmasabt.expenses.extracted.strategy.bbva.BBVAPlinMerchantQRExtractorStrategy;
+import io.github.miguelarmasabt.expenses.extracted.strategy.bbva.BBVAPlinExtractorStrategy;
+import io.github.miguelarmasabt.expenses.extracted.strategy.bbva.BBVAServicePaymentExtractorStrategy;
+import io.github.miguelarmasabt.expenses.extracted.strategy.ibk.IBKPlinExtractorStrategy;
 import io.github.miguelarmasabt.tools.InstanceStub;
 import io.github.miguelarmasabt.tools.JsonSerializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -28,10 +28,10 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class ExtractExpenseStrategyDispatcherTest {
+class BankReceiptExpenseExtractorStrategyDispatcherTest {
 
   private static final JsonSerializer jsonSerializer = new JsonSerializer(new ObjectMapper());
-  private ExtractExpenseStrategyDispatcher dispatcher;
+  private BankReceiptExpenseExtractorDispatcher dispatcher;
 
   @BeforeEach
   void setup() {
@@ -77,22 +77,22 @@ class ExtractExpenseStrategyDispatcherTest {
   @NoArgsConstructor(access = AccessLevel.PRIVATE)
   static class Stub {
 
-    static ExtractExpenseStrategyDispatcher extractExpenseStrategyDispatcher() {
-      return new ExtractExpenseStrategyDispatcher(extractExpenseHelper(), strategies());
+    static BankReceiptExpenseExtractorDispatcher extractExpenseStrategyDispatcher() {
+      return new BankReceiptExpenseExtractorDispatcher(extractExpenseHelper(), strategies());
     }
 
-    static Instance<ExtractExpenseStrategy> strategies() {
+    static Instance<BankReceiptExpenseExtractorStrategy> strategies() {
       return InstanceStub.of(List.of(
-          new BBVAPlinStrategy(),
-          new BBVAPlinMerchantQRStrategy(),
-          new BBVADebitCardStrategy(),
-          new BBVAServicePaymentStrategy(),
-          new IBKPlinStrategy()
+          new BBVAPlinExtractorStrategy(),
+          new BBVAPlinMerchantQRExtractorStrategy(),
+          new BBVADebitCardExtractorStrategy(),
+          new BBVAServicePaymentExtractorStrategy(),
+          new IBKPlinExtractorStrategy()
       ));
     }
 
-    static ExtractExpenseHelper extractExpenseHelper() {
-      return new ExtractExpenseHelper(applicationProperties());
+    static ExpenseExtractorHelper extractExpenseHelper() {
+      return new ExpenseExtractorHelper(applicationProperties());
     }
 
     static ApplicationProperties applicationProperties() {

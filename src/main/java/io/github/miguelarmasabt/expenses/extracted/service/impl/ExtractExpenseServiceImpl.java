@@ -10,7 +10,7 @@ import io.github.miguelarmasabt.expenses.extracted.dto.response.ExtractExpenseRe
 import io.github.miguelarmasabt.expenses.extracted.helper.GmailParameterHelper;
 import io.github.miguelarmasabt.expenses.extracted.mapper.ExtractExpenseMapper;
 import io.github.miguelarmasabt.expenses.extracted.service.ExtractExpenseService;
-import io.github.miguelarmasabt.expenses.extracted.strategy.ExtractExpenseStrategyDispatcher;
+import io.github.miguelarmasabt.expenses.extracted.strategy.BankReceiptExpenseExtractorDispatcher;
 import io.github.miguelarmasabt.expenses.rest.server.beans.ExpenseCategoryResponse;
 import io.github.miguelarmasabt.expenses.rest.server.beans.ExpenseCategoryResponseDto;
 import io.smallrye.mutiny.Multi;
@@ -32,7 +32,7 @@ public class ExtractExpenseServiceImpl implements ExtractExpenseService {
 
   private final UserActivityRepository userActivityRepository;
   private final GmailParameterHelper gmailParameterHelper;
-  private final ExtractExpenseStrategyDispatcher strategyDispatcher;
+  private final BankReceiptExpenseExtractorDispatcher expenseExtractor;
   private final ApplicationProperties properties;
   private final ExpenseCategoryService categoryService;
   private final ExtractExpenseMapper mapper;
@@ -48,7 +48,7 @@ public class ExtractExpenseServiceImpl implements ExtractExpenseService {
 
   private Multi<ExtractExpenseResponseDto> extractExpenses(String userCode, Instant lastSeenAt) {
     String gmailDate = DateUtil.toGmailDate(lastSeenAt);
-    String query = gmailParameterHelper.getGmailQuery(gmailDate);
+    String query = gmailParameterHelper.buildGmailQuery(gmailDate);
     long pageSize = gmailParameterHelper.getPageSize();
     String fields = properties.features().gmailMessages().fields();
     String format = properties.features().gmailMessageContent().format();
@@ -74,7 +74,7 @@ public class ExtractExpenseServiceImpl implements ExtractExpenseService {
                                                                    ExpenseCategoryResponseDto categoryResponse) {
     List<ExpenseCategoryResponse> categories = categoryResponse.getCategories();
     return gmailRepository.getMessageContent(message.getId(), format)
-        .flatMap(strategyDispatcher::toDto)
+        .flatMap(expenseExtractor::toDto)
         .map(expense -> mapper.mapCategory(expense, categories));
   }
 

@@ -3,7 +3,7 @@ package io.github.miguelarmasabt.expenses.extracted.strategy.bbva;
 import io.github.miguelarmasabt.constants.Strings;
 import io.github.miguelarmasabt.commons.enums.Currency;
 import io.github.miguelarmasabt.commons.utils.DateUtil;
-import io.github.miguelarmasabt.expenses.extracted.strategy.ExtractExpenseStrategy;
+import io.github.miguelarmasabt.expenses.extracted.strategy.BankReceiptExpenseExtractorStrategy;
 import jakarta.enterprise.context.ApplicationScoped;
 import lombok.RequiredArgsConstructor;
 
@@ -16,7 +16,7 @@ import java.util.regex.Pattern;
 
 @ApplicationScoped
 @RequiredArgsConstructor
-public class BBVADebitCardStrategy implements ExtractExpenseStrategy {
+public class BBVADebitCardExtractorStrategy implements BankReceiptExpenseExtractorStrategy {
 
   private static final int REGEX_FLAGS = Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE;
 

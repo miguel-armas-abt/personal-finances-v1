@@ -16,7 +16,7 @@ public class GmailParameterHelper {
   /**
    * @param lastSeenAt is in yyyy/MM/dd format.
    */
-  public String getGmailQuery(String lastSeenAt) {
+  public String buildGmailQuery(String lastSeenAt) {
     DateUtil.validateGmailDateYyyyMmDd(lastSeenAt);
     String conditions = properties.features().bankReceipts()
         .values()

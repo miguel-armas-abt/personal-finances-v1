@@ -1,0 +1,17 @@
+participant frontend
+participant personal-finances-v1
+participant mongo-db
+
+frontend->personal-finances-v1: PUT /expenses/{expenseId} (update request)
+
+personal-finances-v1->mongo-db: [db.expenses] find expense by ID
+mongo-db-->personal-finances-v1: **return** expense
+
+alt not exists expense
+    personal-finances-v1->personal-finances-v1: **error** (0005, Expense not found)
+end
+
+personal-finances-v1->mongo-db: [db.expenses] update expense
+mongo-db-->personal-finances-v1: **return** updated expense
+
+personal-finances-v1-->frontend: 204 No Content

@@ -1,6 +1,6 @@
 package io.github.miguelarmasabt.expenses.extracted.strategy.ibk;
 
-import io.github.miguelarmasabt.expenses.extracted.strategy.ExtractExpenseStrategy;
+import io.github.miguelarmasabt.expenses.extracted.strategy.BankReceiptExpenseExtractorStrategy;
 import jakarta.enterprise.context.ApplicationScoped;
 import lombok.RequiredArgsConstructor;
 
@@ -13,7 +13,7 @@ import java.util.regex.Pattern;
 
 @ApplicationScoped
 @RequiredArgsConstructor
-public class IBKPlinStrategy implements ExtractExpenseStrategy {
+public class IBKPlinExtractorStrategy implements BankReceiptExpenseExtractorStrategy {
 
   private static final int REGEX_FLAGS = Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE;
 
