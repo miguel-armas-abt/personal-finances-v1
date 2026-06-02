@@ -1,10 +1,10 @@
 package io.github.miguelarmasabt.expenses.extracted.strategy;
 
-import io.github.miguelarmasabt.commons.repository.gmail.wrapper.response.MessageContentResponseWrapper;
 import io.github.miguelarmasabt.expenses.extracted.dto.response.ExtractExpenseResponseDto;
 import io.github.miguelarmasabt.expenses.extracted.exceptions.DuplicatedStrategyException;
 import io.github.miguelarmasabt.expenses.extracted.exceptions.UnsupportedExtractExpenseStrategyException;
 import io.github.miguelarmasabt.expenses.extracted.utils.GmailMessageHeaderUtil;
+import io.github.miguelarmasabt.repository.gmail.model.MessageContentResponseWrapper;
 import io.smallrye.mutiny.Uni;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.inject.Instance;

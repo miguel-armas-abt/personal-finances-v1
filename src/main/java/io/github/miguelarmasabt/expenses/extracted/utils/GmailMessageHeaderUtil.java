@@ -1,7 +1,9 @@
 package io.github.miguelarmasabt.expenses.extracted.utils;
 
-import io.github.miguelarmasabt.commons.repository.gmail.wrapper.response.MessageContentResponseWrapper;
 import io.github.miguelarmasabt.expenses.extracted.exceptions.NoSuchHeaderFromException;
+import io.github.miguelarmasabt.repository.gmail.model.MessageContentResponseWrapper;
+import io.github.miguelarmasabt.repository.gmail.model.MessageHeader;
+import io.github.miguelarmasabt.repository.gmail.model.MessagePayload;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
@@ -19,9 +21,9 @@ public class GmailMessageHeaderUtil {
   private static final String HEADER_SUBJECT = "Subject";
   private static final Pattern FROM_PATTERN = Pattern.compile("<([^>]+)>");
 
-  public static GmailMessageHeaders extractHeaders(MessageContentResponseWrapper.Payload payload) {
+  public static GmailMessageHeaders extractHeaders(MessagePayload payload) {
     GmailMessageHeaders headers = Optional.ofNullable(payload)
-        .map(MessageContentResponseWrapper.Payload::getHeaders)
+        .map(MessagePayload::getHeaders)
         .orElseGet(List::of)
         .stream()
         .filter(Objects::nonNull)
@@ -40,7 +42,7 @@ public class GmailMessageHeaderUtil {
   }
 
   private static GmailMessageHeaders accumulateHeader(GmailMessageHeaders current,
-                                                      MessageContentResponseWrapper.Header header) {
+                                                      MessageHeader header) {
     if (HEADER_FROM.equalsIgnoreCase(header.getName())) {
       return new GmailMessageHeaders(extractEmailAddress(header.getValue()), current.subject());
     }

@@ -24,7 +24,7 @@ quarkus:
       server:
         use: apicurio
         spec: openapi.yaml
-        input-base-dir: src/main/resources/openapi
+        input-base-dir: src/main/resources/META-INF
         base-package: ${info.group-id}.expenses.rest.server
         use-reactive: false
         use-bean-validation: true
@@ -44,6 +44,27 @@ quarkus:
               resource: ExpensesResource
               target-class: ${info.group-id}.expenses.categories.dto.request.ExpenseCategoryRequestDto
               parameter-name: data
+
+  openapi-generator:
+    codegen:
+      spec:
+        gmail_yaml:
+          base-package: ${info.group-id}.repository.gmail
+          config-key: gmail
+          api-name-suffix: Repository
+          mutiny: true
+          serializable-model: true
+          use-bean-validation: false
+          enable-security-generation: false
+
+        exchange_rate_yaml:
+          base-package: ${info.group-id}.repository.exchange.rate
+          config-key: exchange-rate
+          api-name-suffix: Repository
+          mutiny: true
+          serializable-model: true
+          use-bean-validation: false
+          enable-security-generation: false
 
   mongodb:
     connection-string: "mongodb+srv://miguelarmasabt:l21m01j16M01L13@cluster0.t2pidzg.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0&authSource=admin"

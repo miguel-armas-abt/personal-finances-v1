@@ -1,7 +1,8 @@
 package io.github.miguelarmasabt.expenses.extracted.utils;
 
-import io.github.miguelarmasabt.commons.repository.gmail.wrapper.response.MessageContentResponseWrapper;
 import io.github.miguelarmasabt.constants.Strings;
+import io.github.miguelarmasabt.repository.gmail.model.MessagePart;
+import io.github.miguelarmasabt.repository.gmail.model.MessagePayload;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
@@ -19,11 +20,11 @@ public class ExtractExpenseUtil {
 
   private static final Pattern MULTIPLE_SPACES = Pattern.compile("\\s+");
 
-  public static String extractHtmlBody(MessageContentResponseWrapper.Payload payload) {
+  public static String extractHtmlBody(MessagePayload payload) {
     return Optional.ofNullable(payload.getParts())
         .stream()
         .flatMap(List::stream)
-        .map(MessageContentResponseWrapper.Part::getParts)
+        .map(MessagePart::getParts)
         .filter(Objects::nonNull)
         .flatMap(List::stream)
         .filter(p -> "text/html".equals(p.getMimeType()))

@@ -1,8 +1,8 @@
 package io.github.miguelarmasabt.expenses.categories.helper;
 
-import io.github.miguelarmasabt.commons.repository.exchange.rate.ExchangeRateRepository;
-import io.github.miguelarmasabt.commons.repository.exchange.rate.wrapper.response.ExchangeRateResponseWrapper;
 import io.github.miguelarmasabt.expenses.crud.repository.aggregation.MonthlyCategoryTotalAggregation;
+import io.github.miguelarmasabt.repository.exchange.rate.api.ExchangeRateRepository;
+import io.github.miguelarmasabt.repository.exchange.rate.model.ExchangeRateResponseWrapper;
 import io.smallrye.mutiny.Multi;
 import io.smallrye.mutiny.Uni;
 import jakarta.enterprise.context.ApplicationScoped;

@@ -1,11 +1,11 @@
 package io.github.miguelarmasabt.expenses.extracted.strategy;
 
 import io.github.miguelarmasabt.commons.enums.Currency;
-import io.github.miguelarmasabt.commons.repository.gmail.wrapper.response.MessageContentResponseWrapper;
-import io.github.miguelarmasabt.constants.Strings;
 import io.github.miguelarmasabt.commons.utils.DateUtil;
+import io.github.miguelarmasabt.constants.Strings;
 import io.github.miguelarmasabt.expenses.extracted.dto.response.ExtractExpenseResponseDto;
 import io.github.miguelarmasabt.expenses.extracted.utils.ExtractExpenseUtil;
+import io.github.miguelarmasabt.repository.gmail.model.MessageContentResponseWrapper;
 import io.smallrye.mutiny.Uni;
 import org.jboss.logging.Logger;
 

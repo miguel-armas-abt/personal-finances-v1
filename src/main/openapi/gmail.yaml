@@ -1,0 +1,361 @@
+openapi: 3.0.3
+info:
+  title: Gmail API V1
+  version: v1
+  description: |
+    Cliente OpenAPI para consumir mensajes Gmail y obtener su contenido.
+
+servers:
+  - url: https://gmail.googleapis.com/gmail/v1
+    description: Gmail API V1
+
+tags:
+  - name: Gmail
+
+paths:
+  /users/me/messages:
+    get:
+      tags:
+        - Gmail
+      summary: Listar mensajes del buzón del usuario autenticado.
+      description: |
+        Lista mensajes del buzón del usuario autenticado usando el valor especial
+        `me` como userId.
+      operationId: getMessages
+      parameters:
+        - $ref: '#/components/parameters/QQuery'
+        - $ref: '#/components/parameters/MaxResultsQuery'
+        - $ref: '#/components/parameters/FieldsQuery'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageResponseWrapper'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '429':
+          $ref: '#/components/responses/TooManyRequestsError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      security:
+        - bearerAuth: []
+
+  /users/me/messages/{messageId}:
+    get:
+      tags:
+        - Gmail
+      summary: Obtener contenido de un mensaje
+      description: |
+        Obtiene el contenido de un mensaje específico del usuario autenticado.
+        El parámetro `format` permite controlar el nivel de detalle devuelto por Gmail.
+      operationId: getMessageContent
+      parameters:
+        - $ref: '#/components/parameters/MessageIdPath'
+        - $ref: '#/components/parameters/FormatQuery'
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageContentResponseWrapper'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '429':
+          $ref: '#/components/responses/TooManyRequestsError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      security:
+        - bearerAuth: []
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: OAuth2 Access Token
+      description: 'Token OAuth2 válido para Gmail API enviado como `Authorization: Bearer <token>`.'
+
+  parameters:
+    MessageIdPath:
+      name: messageId
+      in: path
+      required: true
+      description: Identificador del mensaje de Gmail.
+      schema:
+        type: string
+        minLength: 1
+        example: 19cf42db92ad643c
+
+    QQuery:
+      name: q
+      in: query
+      required: false
+      description: Consulta con la misma sintaxis de búsqueda de Gmail.
+      schema:
+        type: string
+        example: 'from:bbva is:unread newer_than:30d'
+
+    MaxResultsQuery:
+      name: maxResults
+      in: query
+      required: false
+      description: Máximo número de mensajes a retornar. Gmail permite hasta 500.
+      schema:
+        type: integer
+        format: int64
+        minimum: 1
+        maximum: 500
+        default: 100
+        example: 10
+
+    FieldsQuery:
+      name: fields
+      in: query
+      required: false
+      description: Máscara de campos para respuesta parcial de Google APIs.
+      schema:
+        type: string
+        example: messages(id,threadId),nextPageToken,resultSizeEstimate
+
+    FormatQuery:
+      name: format
+      in: query
+      required: false
+      description: Formato en el que Gmail debe retornar el mensaje.
+      schema:
+        type: string
+        enum:
+          - minimal
+          - full
+          - raw
+          - metadata
+        default: full
+        example: full
+
+  responses:
+    BadRequestError:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/GoogleErrorResponse'
+    UnauthorizedError:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/GoogleErrorResponse'
+    ForbiddenError:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/GoogleErrorResponse'
+    NotFoundError:
+      description: Not Found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/GoogleErrorResponse'
+    TooManyRequestsError:
+      description: Too Many Requests
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/GoogleErrorResponse'
+    InternalServerError:
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/GoogleErrorResponse'
+
+  schemas:
+    MessageResponseWrapper:
+      type: object
+      properties:
+        messages:
+          type: array
+          description: Lista resumida de mensajes. Gmail retorna solo id y threadId en esta operación.
+          items:
+            $ref: '#/components/schemas/MessageSummary'
+        nextPageToken:
+          type: string
+          description: Token para solicitar la siguiente página.
+          example: 0987654321abcdef
+        resultSizeEstimate:
+          type: integer
+          format: int64
+          description: Estimación del total de resultados.
+          example: 25
+
+    MessageSummary:
+      type: object
+      properties:
+        id:
+          type: string
+          example: 19cf42db92ad643c
+        threadId:
+          type: string
+          example: 19cf42db92ad643c
+
+    MessageContentResponseWrapper:
+      type: object
+      description: Representación del contenido de un mensaje de Gmail.
+      properties:
+        id:
+          type: string
+          example: 19cf42db92ad643c
+        threadId:
+          type: string
+          example: 19cf42db92ad643c
+        labelIds:
+          type: array
+          items:
+            type: string
+          example: [INBOX, UNREAD]
+        snippet:
+          type: string
+          example: Pago recibido por S/ 25.00
+        payload:
+          $ref: '#/components/schemas/MessagePayload'
+        sizeEstimate:
+          type: integer
+          format: int64
+          example: 12543
+        historyId:
+          type: string
+          example: '1234567'
+        internalDate:
+          type: string
+          description: Marca de tiempo interna de Gmail en milisegundos desde epoch, enviada como string.
+          example: '1716400000000'
+        raw:
+          type: string
+          description: Mensaje completo codificado en base64url cuando `format=raw`.
+
+    MessagePayload:
+      type: object
+      description: Estructura MIME principal del mensaje.
+      properties:
+        partId:
+          type: string
+          example: ''
+        mimeType:
+          type: string
+          example: multipart/alternative
+        filename:
+          type: string
+          example: ''
+        headers:
+          type: array
+          items:
+            $ref: '#/components/schemas/MessageHeader'
+        body:
+          $ref: '#/components/schemas/MessageBody'
+        parts:
+          type: array
+          items:
+            $ref: '#/components/schemas/MessagePart'
+
+    MessagePart:
+      type: object
+      description: Parte MIME del mensaje. Puede contener partes anidadas.
+      properties:
+        partId:
+          type: string
+          example: '0'
+        mimeType:
+          type: string
+          example: text/html
+        filename:
+          type: string
+          example: comprobante.pdf
+        headers:
+          type: array
+          items:
+            $ref: '#/components/schemas/MessageHeader'
+        body:
+          $ref: '#/components/schemas/MessageBody'
+        parts:
+          type: array
+          items:
+            $ref: '#/components/schemas/MessagePart'
+
+    MessageHeader:
+      type: object
+      description: Cabecera MIME del mensaje.
+      properties:
+        name:
+          type: string
+          example: Subject
+        value:
+          type: string
+          example: Confirmación de pago
+
+    MessageBody:
+      type: object
+      description: Cuerpo de una parte MIME.
+      properties:
+        attachmentId:
+          type: string
+          description: Identificador del adjunto cuando la data no viene embebida.
+          example: ANGjdJ9i...
+        size:
+          type: integer
+          format: int64
+          example: 2048
+        data:
+          type: string
+          description: Contenido codificado en base64url.
+          example: PGh0bWw-PGJvZHk-SG9sYTwvYm9keT48L2h0bWw-
+
+    GoogleErrorResponse:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/GoogleError'
+
+    GoogleError:
+      type: object
+      properties:
+        code:
+          type: integer
+          format: int32
+          example: 401
+        message:
+          type: string
+          example: Request had invalid authentication credentials.
+        status:
+          type: string
+          example: UNAUTHENTICATED
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/GoogleErrorDetail'
+
+    GoogleErrorDetail:
+      type: object
+      properties:
+        domain:
+          type: string
+          example: global
+        reason:
+          type: string
+          example: authError
+        message:
+          type: string
+          example: Invalid Credentials

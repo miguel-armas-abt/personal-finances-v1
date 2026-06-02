@@ -1,8 +1,6 @@
 package io.github.miguelarmasabt.expenses.extracted.service.impl;
 
 import io.github.miguelarmasabt.commons.properties.ApplicationProperties;
-import io.github.miguelarmasabt.commons.repository.gmail.GmailRepository;
-import io.github.miguelarmasabt.commons.repository.gmail.wrapper.response.MessageResponseWrapper;
 import io.github.miguelarmasabt.commons.repository.user.activity.UserActivityRepository;
 import io.github.miguelarmasabt.commons.utils.DateUtil;
 import io.github.miguelarmasabt.expenses.categories.service.ExpenseCategoryService;
@@ -13,6 +11,8 @@ import io.github.miguelarmasabt.expenses.extracted.service.ExtractExpenseService
 import io.github.miguelarmasabt.expenses.extracted.strategy.BankReceiptExpenseExtractorDispatcher;
 import io.github.miguelarmasabt.expenses.rest.server.beans.ExpenseCategoryResponse;
 import io.github.miguelarmasabt.expenses.rest.server.beans.ExpenseCategoryResponseDto;
+import io.github.miguelarmasabt.repository.gmail.api.GmailRepository;
+import io.github.miguelarmasabt.repository.gmail.model.MessageSummary;
 import io.smallrye.mutiny.Multi;
 import io.smallrye.mutiny.Uni;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -69,7 +69,7 @@ public class ExtractExpenseServiceImpl implements ExtractExpenseService {
         );
   }
 
-  private Uni<ExtractExpenseResponseDto> extractExpenseFromMessage(MessageResponseWrapper.Message message,
+  private Uni<ExtractExpenseResponseDto> extractExpenseFromMessage(MessageSummary message,
                                                                    String format,
                                                                    ExpenseCategoryResponseDto categoryResponse) {
     List<ExpenseCategoryResponse> categories = categoryResponse.getCategories();

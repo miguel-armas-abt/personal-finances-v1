@@ -1,17 +1,17 @@
 package io.github.miguelarmasabt.expenses.extracted.strategy;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.miguelarmasabt.commons.properties.ApplicationProperties;
 import io.github.miguelarmasabt.commons.properties.ApplicationPropertiesStub;
-import io.github.miguelarmasabt.commons.repository.gmail.wrapper.response.MessageContentResponseWrapper;
 import io.github.miguelarmasabt.expenses.extracted.dto.response.ExtractExpenseResponseDto;
 import io.github.miguelarmasabt.expenses.extracted.strategy.bbva.BBVADebitCardExtractorStrategy;
-import io.github.miguelarmasabt.expenses.extracted.strategy.bbva.BBVAPlinMerchantQRExtractorStrategy;
 import io.github.miguelarmasabt.expenses.extracted.strategy.bbva.BBVAPlinExtractorStrategy;
+import io.github.miguelarmasabt.expenses.extracted.strategy.bbva.BBVAPlinMerchantQRExtractorStrategy;
 import io.github.miguelarmasabt.expenses.extracted.strategy.bbva.BBVAServicePaymentExtractorStrategy;
 import io.github.miguelarmasabt.expenses.extracted.strategy.ibk.IBKPlinExtractorStrategy;
+import io.github.miguelarmasabt.repository.gmail.model.MessageContentResponseWrapper;
 import io.github.miguelarmasabt.tools.InstanceStub;
 import io.github.miguelarmasabt.tools.JsonSerializer;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.enterprise.inject.Instance;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
