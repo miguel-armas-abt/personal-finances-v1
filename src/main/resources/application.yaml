@@ -1,5 +1,7 @@
 info:
   group-id: io.github.miguelarmasabt
+  rest-client:
+    propagate-headers: '@org.eclipse.microprofile.rest.client.annotation.RegisterClientHeaders'
 
 quarkus:
   application:
@@ -56,6 +58,7 @@ quarkus:
           serializable-model: true
           use-bean-validation: false
           enable-security-generation: false
+          additional-api-type-annotations: ${info.rest-client.propagate-headers}
 
         exchange_rate_yaml:
           base-package: ${info.group-id}.repository.exchange.rate
@@ -78,16 +81,22 @@ quarkus:
     gmail:
       url: ${GMAIL_ENDPOINT}
       verify-host: false
-      connect-timeout: 850
-      read-timeout: 4500
+      connect-timeout: 1500
+      read-timeout: 15000
       headers:
         Content-Type: application/json
+      params:
+        messages:
+          page-size: 50
+          fields: 'messages/id,nextPageToken'
+        message-content:
+          format: full
 
     exchange-rate:
       url: ${EXCHANGE_RATE_ENDPOINT}
       verify-host: false
-      connect-timeout: 850
-      read-timeout: 4500
+      connect-timeout: 1500
+      read-timeout: 15000
       headers:
         Content-Type: application/json
 
@@ -96,59 +105,47 @@ org:
     microprofile:
       rest:
         client:
-          propagateHeaders: trace-parent, caller-name, Authorization, request-date
+          propagateHeaders: Authorization,trace-parent,caller-name,request-date
 
 configuration:
-
   features:
-    gmail-messages:
-      page-size: 10
-      fields: 'messages/id,nextPageToken'
-    gmail-message-content:
-      format: full
+    expenses:
+      search-criteria:
+        page-size: 20
 
-    search-criteria:
-      page-size: 20
+      bank-receipts:
+        "BBVA_DEBIT_CARD":
+          from: procesos@bbva.com.pe
+          subject: "Has realizado un consumo con tu tarjeta BBVA"
 
-    csv:
-      imports:
-        batch-size: 500
-      exports:
-        rows-per-chunk: 250
+        "BBVA_PLIN":
+          from: procesos@bbva.com.pe
+          subject: "Constancia de operación transferencia PLIN"
 
-    bank-receipts:
-      "BBVA_DEBIT_CARD":
-        from: procesos@bbva.com.pe
-        subject: "Has realizado un consumo con tu tarjeta BBVA"
+        "BBVA_PLIN_MERCHANT_QR":
+          from: procesos@bbva.com.pe
+          subject: "BBVA - Constancia de pago a comercios con QR"
 
-      "BBVA_PLIN":
-        from: procesos@bbva.com.pe
-        subject: "Constancia de operación transferencia PLIN"
+        "BBVA_SERVICE_PAYMENT":
+          from: procesos@bbva.com.pe
+          subject: "BBVA - Constancia Pago de servicios"
 
-      "BBVA_PLIN_MERCHANT_QR":
-        from: procesos@bbva.com.pe
-        subject: "BBVA - Constancia de pago a comercios con QR"
+        "IBK_PLIN":
+          from: servicioalcliente@netinterbank.com.pe
+          subject: "Constancia de Pago Plin"
 
-      "BBVA_SERVICE_PAYMENT":
-        from: procesos@bbva.com.pe
-        subject: "BBVA - Constancia Pago de servicios"
+        "BCP_DEBIT_CARD":
+          from: notificaciones@notificacionesbcp.com.pe
+          subject: "Realizaste un consumo con tu Tarjeta de Débito BCP - Servicio de Notificaciones BCP"
 
-      "IBK_PLIN":
-        from: servicioalcliente@netinterbank.com.pe
-        subject: "Constancia de Pago Plin"
-
-#      "BCP_DEBIT_CARD":
-#        from: notificaciones@notificacionesbcp.com.pe
-#        subject: "Realizaste un consumo con tu Tarjeta de Débito BCP - Servicio de Notificaciones BCP"
-#
-#      "BCP_CREDIT_CARD":
-#        from: notificaciones@notificacionesbcp.com.pe
-#        subject: "Realizaste un consumo con tu Tarjeta de Crédito BCP - Servicio de Notificaciones BCP"
-#
-#      "BCP_YAPE_SERVICE":
-#        from: noreply@yape.pe
-#        subject: "Tu yapeo de servicio ha sido confirmado"
-#
-#      "BCP_YAPE":
-#        from: notificaciones@yape.pe
-#        subject: "Pago exitoso"
+  #      "BCP_CREDIT_CARD":
+  #        from: notificaciones@notificacionesbcp.com.pe
+  #        subject: "Realizaste un consumo con tu Tarjeta de Crédito BCP - Servicio de Notificaciones BCP"
+  #
+  #      "BCP_YAPE_SERVICE":
+  #        from: noreply@yape.pe
+  #        subject: "Tu yapeo de servicio ha sido confirmado"
+  #
+  #      "BCP_YAPE":
+  #        from: notificaciones@yape.pe
+  #        subject: "Pago exitoso"

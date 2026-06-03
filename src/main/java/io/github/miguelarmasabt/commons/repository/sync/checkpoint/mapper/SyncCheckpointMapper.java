@@ -12,5 +12,5 @@ import java.time.Instant;
 })
 public interface SyncCheckpointMapper {
 
-  SyncCheckpointEntity toEntity(String userCode, SyncScope scope, Instant lastSeenAt);
+  SyncCheckpointEntity toEntity(String userCode, SyncScope scope, Instant checkpointAt);
 }

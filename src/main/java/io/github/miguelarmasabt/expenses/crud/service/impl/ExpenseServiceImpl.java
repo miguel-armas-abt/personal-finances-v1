@@ -60,7 +60,7 @@ public class ExpenseServiceImpl implements ExpenseService {
 
   @Override
   public Uni<ExpenseSearchResponseDto> searchExpensesByCursorPagination(String userCode, ExpenseSearchParams params) {
-    int pageSize = properties.features().searchCriteria().pageSize();
+    int pageSize = properties.features().expenses().searchCriteria().pageSize();
     ExpenseSearchCriteria searchCriteria = searchMapper.toSearchCriteria(userCode, params);
 
     CursorEncoder.Cursor cursor = null;

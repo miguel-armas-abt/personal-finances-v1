@@ -8,7 +8,7 @@ import io.github.miguelarmasabt.expenses.crud.dto.params.ExpenseSearchParams;
 import io.github.miguelarmasabt.expenses.crud.dto.request.ExpenseSaveRequestDto;
 import io.github.miguelarmasabt.expenses.crud.dto.request.ExpenseUpdateRequestDto;
 import io.github.miguelarmasabt.expenses.crud.mapper.ExpenseSearchMapper;
-import io.github.miguelarmasabt.expenses.crud.service.ExpenseRefreshService;
+import io.github.miguelarmasabt.expenses.refresh.service.ExpenseRefreshService;
 import io.github.miguelarmasabt.expenses.crud.service.ExpenseService;
 import io.github.miguelarmasabt.expenses.csv.service.ExportExpenseCsvService;
 import io.github.miguelarmasabt.expenses.csv.service.ImportExpenseCsvService;
@@ -33,6 +33,7 @@ import org.jboss.resteasy.reactive.multipart.FileUpload;
 
 import java.net.URI;
 import java.util.Date;
+import java.util.Objects;
 import java.util.concurrent.CompletionStage;
 
 @ApplicationScoped
@@ -98,12 +99,14 @@ public class ExpenseRestService implements ExpensesResource {
   }
 
   @Override
-  public CompletionStage<Void> refreshExpenses(String authorization,
+  public CompletionStage<Response> refreshExpenses(String authorization,
                                                String callerName,
                                                String traceParent,
                                                String userCode) {
     return refreshService.refreshExpenses(userCode)
-        .replaceWithVoid()
+        .map(response -> Objects.isNull(response.getGmailMessageIds()) || response.getGmailMessageIds().isEmpty()
+            ? Response.noContent().build()
+            : Response.ok(response).build())
         .subscribeAsCompletionStage();
   }
 

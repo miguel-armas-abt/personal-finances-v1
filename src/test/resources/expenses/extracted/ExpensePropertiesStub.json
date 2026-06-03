@@ -1,0 +1,28 @@
+{
+  "bankReceipts": {
+    "BBVA_DEBIT_CARD": {
+      "from": "procesos@bbva.com.pe",
+      "subject": "Has realizado un consumo con tu tarjeta BBVA"
+    },
+    "BBVA_PLIN": {
+      "from": "procesos@bbva.com.pe",
+      "subject": "Constancia de operación transferencia PLIN"
+    },
+    "BBVA_PLIN_MERCHANT_QR": {
+      "from": "procesos@bbva.com.pe",
+      "subject": "BBVA - Constancia de pago a comercios con QR"
+    },
+    "BBVA_SERVICE_PAYMENT": {
+      "from": "procesos@bbva.com.pe",
+      "subject": "BBVA - Constancia Pago de servicios"
+    },
+    "IBK_PLIN": {
+      "from": "servicioalcliente@netinterbank.com.pe",
+      "subject": "Constancia de Pago Plin"
+    },
+    "BCP_DEBIT_CARD": {
+      "from": "notificaciones@notificacionesbcp.com.pe",
+      "subject": "Realizaste un consumo con tu Tarjeta de Débito BCP - Servicio de Notificaciones BCP"
+    }
+  }
+}

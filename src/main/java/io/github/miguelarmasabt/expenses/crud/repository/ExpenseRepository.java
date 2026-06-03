@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -177,7 +178,27 @@ public class ExpenseRepository implements ReactivePanacheMongoRepository<Expense
       return Uni.createFrom().voidItem();
     }
 
-    return persist(expenses).replaceWithVoid();
+    return persist(expenses);
+  }
+
+  public Uni<Set<String>> existsGmailMessages(String userCode, List<String> gmailMessageIds) {
+    validateUserCode(userCode);
+
+    if (gmailMessageIds.isEmpty()) {
+      return Uni.createFrom().item(Set.of());
+    }
+
+    Bson filter = Filters.and(
+        Filters.eq(FIELD_USER_CODE, userCode),
+        Filters.in(FIELD_GMAIL_MESSAGE_ID, gmailMessageIds)
+    );
+
+    return find(toDocument(filter))
+        .stream()
+        .map(ExpenseEntity::getGmailMessageId)
+        .filter(Objects::nonNull)
+        .collect().asList()
+        .map(Set::copyOf);
   }
 
   public Uni<Boolean> existsGmailMessage(String gmailMessageId) {

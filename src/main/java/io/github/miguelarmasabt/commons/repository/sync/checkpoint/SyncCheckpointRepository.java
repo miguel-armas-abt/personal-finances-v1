@@ -1,5 +1,6 @@
 package io.github.miguelarmasabt.commons.repository.sync.checkpoint;
 
+import io.github.miguelarmasabt.commons.properties.ApplicationProperties;
 import io.github.miguelarmasabt.commons.repository.sync.checkpoint.entity.SyncCheckpointEntity;
 import io.github.miguelarmasabt.commons.repository.sync.checkpoint.enums.SyncScope;
 import io.github.miguelarmasabt.commons.repository.sync.checkpoint.mapper.SyncCheckpointMapper;
@@ -9,6 +10,7 @@ import jakarta.enterprise.context.ApplicationScoped;
 import lombok.RequiredArgsConstructor;
 import org.bson.types.ObjectId;
 
+import java.time.Duration;
 import java.time.Instant;
 
 @ApplicationScoped
@@ -16,6 +18,7 @@ import java.time.Instant;
 public class SyncCheckpointRepository implements ReactivePanacheMongoRepositoryBase<SyncCheckpointEntity, ObjectId> {
 
   private final SyncCheckpointMapper mapper;
+  private final ApplicationProperties properties;
 
   public Uni<Void> updateByUserCode(String userCode,
                                     SyncScope scope,
@@ -37,7 +40,8 @@ public class SyncCheckpointRepository implements ReactivePanacheMongoRepositoryB
     return findByUserCodeAndScope(userCode, scope)
         .onItem().ifNotNull().transformToUni(checkpoint -> Uni.createFrom().item(checkpoint))
         .onItem().ifNull().switchTo(() -> {
-          SyncCheckpointEntity entity = mapper.toEntity(userCode, scope, Instant.now());
+          long lookbackDays = properties.features().expenses().refresh().initialCheckpointLookbackDays();
+          SyncCheckpointEntity entity = mapper.toEntity(userCode, scope, Instant.now().minus(Duration.ofDays(lookbackDays)));
           return persist(entity);
         });
   }

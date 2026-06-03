@@ -76,7 +76,7 @@ public class ImportExpenseCsvServiceImpl implements ImportExpenseCsvService {
 
     return Panache.withTransaction(() ->
         Multi.createFrom().iterable(entities)
-            .group().intoLists().of(properties.features().csv().imports().batchSize())
+            .group().intoLists().of(properties.features().expenses().csv().imports().batchSize())
             .onItem().transformToUniAndConcatenate(expenseRepository::saveAll)
             .collect().last()
             .replaceWithVoid()

@@ -145,7 +145,12 @@ paths:
         - Expense
       summary: Refrescar gastos del usuario
       description: |
-        Ejecuta un proceso de refresco de gastos para el correo electrónico indicado.
+        La operación busca nuevos mensajes de Gmail a partir del último checkpoint
+        registrado, extrae los gastos encontrados y los guarda en base de datos.
+
+        Si se guardaron nuevos gastos, devuelve una lista con sus `gmailMessageId`.
+
+        Si no se guardó ningún gasto, responde sin contenido.
       operationId: refreshExpenses
       x-codegen-async: true
       parameters:
@@ -154,6 +159,13 @@ paths:
         - $ref: '#/components/parameters/TraceParentHeader'
         - $ref: '#/components/parameters/UserCodeHeader'
       responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExpenseRefreshResponseDto'
+              x-codegen-returnType: jakarta.ws.rs.core.Response
         '204':
           description: No Content
         '400':
@@ -596,11 +608,23 @@ components:
     ExpenseSaveResponseDto:
       type: object
       description: Respuesta al registrar un gasto.
-      required:
-        - expenseId
       properties:
         expenseId:
           $ref: '#/components/schemas/ExpenseIdSchema'
+
+    ExpenseRefreshResponseDto:
+      type: object
+      properties:
+        gmailMessageIds:
+          type: array
+          description: |
+            Lista de identificadores de mensajes Gmail asociados a los gastos
+            guardados durante el proceso de refresco.
+          items:
+            $ref: '#/components/schemas/GmailMessageIdSchema'
+          examples:
+            - - 19cf42db92ad643c
+              - 19d11517b0256b48
 
     ExpenseSearchResponseDto:
       type: object

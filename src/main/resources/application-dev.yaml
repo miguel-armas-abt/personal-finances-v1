@@ -1,0 +1,5 @@
+configuration:
+  features:
+    expenses:
+      refresh:
+        enableDuplicateCheck: false

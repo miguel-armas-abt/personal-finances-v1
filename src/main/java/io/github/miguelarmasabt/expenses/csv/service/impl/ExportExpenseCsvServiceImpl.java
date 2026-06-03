@@ -26,7 +26,7 @@ public class ExportExpenseCsvServiceImpl implements ExportExpenseCsvService {
 
     Multi<Buffer> body = expenseService.searchExpenses(userCode, searchQueryParams)
         .onItem().transform(csvMapper::toCsvRow)
-        .group().intoLists().of(properties.features().csv().exports().rowsPerChunk())
+        .group().intoLists().of(properties.features().expenses().csv().exports().rowsPerChunk())
         .onItem().transform(csvEncoder::encodeRows);
 
     return Multi.createBy().concatenating().streams(header, body);
