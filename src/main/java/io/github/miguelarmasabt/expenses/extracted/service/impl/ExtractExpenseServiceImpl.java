@@ -1,7 +1,8 @@
 package io.github.miguelarmasabt.expenses.extracted.service.impl;
 
 import io.github.miguelarmasabt.commons.properties.ApplicationProperties;
-import io.github.miguelarmasabt.commons.repository.user.activity.UserActivityRepository;
+import io.github.miguelarmasabt.commons.repository.sync.checkpoint.SyncCheckpointRepository;
+import io.github.miguelarmasabt.commons.repository.sync.checkpoint.enums.SyncScope;
 import io.github.miguelarmasabt.commons.utils.DateUtil;
 import io.github.miguelarmasabt.expenses.categories.service.ExpenseCategoryService;
 import io.github.miguelarmasabt.expenses.extracted.dto.response.ExtractExpenseResponseDto;
@@ -30,7 +31,7 @@ public class ExtractExpenseServiceImpl implements ExtractExpenseService {
 
   private static final int MESSAGE_CONTENT_CONCURRENCY = 10;
 
-  private final UserActivityRepository userActivityRepository;
+  private final SyncCheckpointRepository syncCheckpointRepository;
   private final GmailParameterHelper gmailParameterHelper;
   private final BankReceiptExpenseExtractorDispatcher expenseExtractor;
   private final ApplicationProperties properties;
@@ -42,13 +43,13 @@ public class ExtractExpenseServiceImpl implements ExtractExpenseService {
 
   @Override
   public Multi<ExtractExpenseResponseDto> getExtractedExpenses(String userCode) {
-    return userActivityRepository.findOrPersist(userCode)
-        .onItem().transformToMulti(userActivity -> extractExpenses(userCode, userActivity.getLastSeenAt()));
+    return syncCheckpointRepository.findOrPersist(userCode, SyncScope.EXPENSES)
+        .onItem().transformToMulti(syncCheckpoint -> extractExpenses(userCode, syncCheckpoint.getCheckpointAt()));
   }
 
-  private Multi<ExtractExpenseResponseDto> extractExpenses(String userCode, Instant lastSeenAt) {
-    String gmailDate = DateUtil.toGmailDate(lastSeenAt);
-    String query = gmailParameterHelper.buildGmailQuery(gmailDate);
+  private Multi<ExtractExpenseResponseDto> extractExpenses(String userCode, Instant lastCheckpointAt) {
+    String lastMessageReadAt = DateUtil.toGmailDate(lastCheckpointAt);
+    String query = gmailParameterHelper.buildGmailQuery(lastMessageReadAt);
     long pageSize = gmailParameterHelper.getPageSize();
     String fields = properties.features().gmailMessages().fields();
     String format = properties.features().gmailMessageContent().format();
@@ -61,9 +62,9 @@ public class ExtractExpenseServiceImpl implements ExtractExpenseService {
                 .onItem().transformToMulti(message -> this.extractExpenseFromMessage(message, format, categoryResponse).toMulti())
                 .merge(MESSAGE_CONTENT_CONCURRENCY)
                 .select().where(Objects::nonNull)
-                .select().where(expense -> expense.getDate().isAfter(lastSeenAt))
+                .select().where(expense -> expense.getDate().isAfter(lastCheckpointAt))
                 .collect().asList()
-                .flatMap(expenses -> updateLastSeenIfNeeded(userCode, lastSeenAt, expenses)
+                .flatMap(expenses -> updateLastSeenIfNeeded(userCode, lastCheckpointAt, expenses)
                     .replaceWith(expenses))
                 .onItem().transformToMulti(Multi.createFrom()::iterable)
         );
@@ -87,7 +88,7 @@ public class ExtractExpenseServiceImpl implements ExtractExpenseService {
         .filter(Objects::nonNull)
         .max(Instant::compareTo)
         .filter(newestDate -> newestDate.isAfter(lastSeenAt))
-        .map(newestDate -> userActivityRepository.updateByUserCode(userCode, newestDate))
+        .map(newestDate -> syncCheckpointRepository.updateByUserCode(userCode, SyncScope.EXPENSES, newestDate))
         .orElseGet(() -> Uni.createFrom().voidItem());
   }
 }

@@ -1,7 +1,8 @@
-package io.github.miguelarmasabt.commons.repository.user.activity.rest;
+package io.github.miguelarmasabt.commons.repository.sync.checkpoint.rest;
 
 import io.github.miguelarmasabt.commons.dto.params.AppHeaders;
-import io.github.miguelarmasabt.commons.repository.user.activity.UserActivityRepository;
+import io.github.miguelarmasabt.commons.repository.sync.checkpoint.SyncCheckpointRepository;
+import io.github.miguelarmasabt.commons.repository.sync.checkpoint.enums.SyncScope;
 import io.smallrye.mutiny.Uni;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.BeanParam;
@@ -14,14 +15,14 @@ import lombok.RequiredArgsConstructor;
 
 @Path("/user-activities")
 @RequiredArgsConstructor
-public class UserActivityRestService {
+public class SyncCheckpointRestService {
 
-  private final UserActivityRepository userActivityService;
+  private final SyncCheckpointRepository userActivityService;
 
   @POST
   @Produces(MediaType.APPLICATION_JSON)
   public Uni<Response> findOrPersist(@BeanParam @Valid AppHeaders headers) {
-    return userActivityService.findOrPersist(headers.getUserCode())
+    return userActivityService.findOrPersist(headers.getUserCode(), SyncScope.EXPENSES)
         .map(result -> Response.ok()
             .entity(result)
             .build());

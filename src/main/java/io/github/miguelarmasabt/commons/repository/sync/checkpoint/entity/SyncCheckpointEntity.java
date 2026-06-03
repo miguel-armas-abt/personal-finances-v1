@@ -1,4 +1,4 @@
-package io.github.miguelarmasabt.commons.repository.user.activity.entity;
+package io.github.miguelarmasabt.commons.repository.sync.checkpoint.entity;
 
 import io.quarkus.mongodb.panache.common.MongoEntity;
 import lombok.AllArgsConstructor;
@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.bson.codecs.pojo.annotations.BsonId;
+import org.bson.types.ObjectId;
 
 import java.time.Instant;
 
@@ -13,11 +14,15 @@ import java.time.Instant;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-@MongoEntity(collection = "user_activity")
-public class UserActivityEntity {
+@MongoEntity(collection = "sync_checkpoints")
+public class SyncCheckpointEntity {
 
   @BsonId
+  private ObjectId id;
+
   private String userCode;
 
-  private Instant lastSeenAt;
+  private Instant checkpointAt;
+
+  private String scope;
 }

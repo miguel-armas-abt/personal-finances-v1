@@ -18,6 +18,7 @@ import java.time.Instant;
 public class ExtractExpenseResponseDto implements Serializable {
 
   private String gmailMessageId;
+  private Instant gmailMessageReceivedAt;
   private Instant date;
   private ExpenseDetail detail;
   private String currency;

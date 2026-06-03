@@ -33,6 +33,7 @@ public interface BankReceiptExpenseExtractorStrategy {
 
   default Uni<ExtractExpenseResponseDto> toDto(MessageContentResponseWrapper messageContent) {
     String gmailMessageId = messageContent.getId();
+    Instant gmailMessageReceivedAt = Instant.ofEpochMilli(Long.parseLong(messageContent.getInternalDate()));
     String htmlBody = ExtractExpenseUtil.extractHtmlBody(messageContent.getPayload());
     String text = ExtractExpenseUtil.toPlainText(htmlBody);
 
@@ -43,6 +44,7 @@ public interface BankReceiptExpenseExtractorStrategy {
     return Uni.createFrom().item(
         ExtractExpenseResponseDto.builder()
             .gmailMessageId(gmailMessageId)
+            .gmailMessageReceivedAt(gmailMessageReceivedAt)
             .date(date)
             .currency(amountAndCurrency.currency())
             .amount(amountAndCurrency.amount())
