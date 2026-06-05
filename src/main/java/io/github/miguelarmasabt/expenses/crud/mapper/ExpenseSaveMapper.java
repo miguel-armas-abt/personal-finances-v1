@@ -1,11 +1,11 @@
 package io.github.miguelarmasabt.expenses.crud.mapper;
 
-import io.github.miguelarmasabt.config.MappingConfig;
 import io.github.miguelarmasabt.commons.utils.DateUtil;
+import io.github.miguelarmasabt.config.MappingConfig;
 import io.github.miguelarmasabt.expenses.crud.dto.request.ExpenseSaveRequestDto;
 import io.github.miguelarmasabt.expenses.crud.repository.entity.ExpenseEntity;
-import io.github.miguelarmasabt.expenses.refresh.dto.response.ExtractExpenseResponseDto;
 import io.github.miguelarmasabt.expenses.rest.server.beans.ExpenseSaveResponseDto;
+import io.github.miguelarmasabt.expenses.sync.dto.response.ExtractExpenseResponseDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 

@@ -1,5 +1,10 @@
 package io.github.miguelarmasabt.expenses.crud.repository;
 
+import com.mongodb.client.model.Accumulators;
+import com.mongodb.client.model.Aggregates;
+import com.mongodb.client.model.Filters;
+import com.mongodb.client.model.Projections;
+import com.mongodb.client.model.Sorts;
 import io.github.miguelarmasabt.commons.exceptions.UserCodeRequiredException;
 import io.github.miguelarmasabt.commons.utils.DateUtil;
 import io.github.miguelarmasabt.commons.utils.MongoDbUtil;
@@ -8,11 +13,6 @@ import io.github.miguelarmasabt.expenses.crud.repository.aggregation.MonthlyCate
 import io.github.miguelarmasabt.expenses.crud.repository.criteria.ExpenseSearchCriteria;
 import io.github.miguelarmasabt.expenses.crud.repository.entity.ExpenseEntity;
 import io.github.miguelarmasabt.expenses.crud.utils.CursorEncoder;
-import com.mongodb.client.model.Accumulators;
-import com.mongodb.client.model.Aggregates;
-import com.mongodb.client.model.Filters;
-import com.mongodb.client.model.Projections;
-import com.mongodb.client.model.Sorts;
 import io.quarkus.mongodb.panache.reactive.ReactivePanacheMongoRepository;
 import io.smallrye.mutiny.Multi;
 import io.smallrye.mutiny.Uni;

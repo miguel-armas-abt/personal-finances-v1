@@ -2,17 +2,13 @@ package io.github.miguelarmasabt.commons.properties.features.expenses;
 
 import io.smallrye.config.WithDefault;
 
-import java.util.Map;
-
 public interface ExpenseProperties {
 
   CsvProperties csv();
 
   SearchCriteria searchCriteria();
 
-  Refresh refresh();
-
-  Map<String, BankReceipt> bankReceipts();
+  Sync sync();
 
   interface CsvProperties {
 
@@ -36,13 +32,7 @@ public interface ExpenseProperties {
     Integer pageSize();
   }
 
-  interface BankReceipt {
-    String from();
-
-    String subject();
-  }
-
-  interface Refresh {
+  interface Sync {
     @WithDefault("30")
     Long initialCheckpointLookbackDays();
   }

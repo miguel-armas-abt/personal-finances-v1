@@ -8,14 +8,15 @@ import io.github.miguelarmasabt.expenses.crud.dto.params.ExpenseSearchParams;
 import io.github.miguelarmasabt.expenses.crud.dto.request.ExpenseSaveRequestDto;
 import io.github.miguelarmasabt.expenses.crud.dto.request.ExpenseUpdateRequestDto;
 import io.github.miguelarmasabt.expenses.crud.mapper.ExpenseSearchMapper;
-import io.github.miguelarmasabt.expenses.refresh.service.ExpenseRefreshService;
 import io.github.miguelarmasabt.expenses.crud.service.ExpenseService;
 import io.github.miguelarmasabt.expenses.csv.service.ExportExpenseCsvService;
 import io.github.miguelarmasabt.expenses.csv.service.ImportExpenseCsvService;
 import io.github.miguelarmasabt.expenses.csv.utils.FileNameGenerator;
 import io.github.miguelarmasabt.expenses.rest.server.ExpensesResource;
+import io.github.miguelarmasabt.expenses.rest.server.beans.ExpenseCategoryReplacementRequestDto;
 import io.github.miguelarmasabt.expenses.rest.server.beans.ExpenseCategoryResponseDto;
 import io.github.miguelarmasabt.expenses.rest.server.beans.ExpenseSearchResponseDto;
+import io.github.miguelarmasabt.expenses.sync.service.ExpenseSyncService;
 import io.smallrye.mutiny.Uni;
 import io.vertx.core.buffer.Buffer;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -42,7 +43,7 @@ public class ExpenseRestService implements ExpensesResource {
 
   private final ExpenseSearchMapper searchMapper;
   private final ExpenseService expenseService;
-  private final ExpenseRefreshService refreshService;
+  private final ExpenseSyncService syncService;
   private final ExportExpenseCsvService exportExpenseCsvService;
   private final ImportExpenseCsvService importExpenseCsvService;
   private final ExpenseCategoryService categoryService;
@@ -99,15 +100,24 @@ public class ExpenseRestService implements ExpensesResource {
   }
 
   @Override
-  public CompletionStage<Response> refreshExpenses(String authorization,
-                                               String callerName,
-                                               String traceParent,
-                                               String userCode) {
-    return refreshService.refreshExpenses(userCode)
+  public CompletionStage<Response> syncExpenses(String authorization,
+                                                String callerName,
+                                                String traceParent,
+                                                String userCode) {
+    return syncService.syncExpenses(userCode)
         .map(response -> Objects.isNull(response.getGmailMessageIds()) || response.getGmailMessageIds().isEmpty()
             ? Response.noContent().build()
             : Response.ok(response).build())
         .subscribeAsCompletionStage();
+  }
+
+  @Override
+  public CompletionStage<Response> applyCategories(String authorization,
+                                                   String callerName,
+                                                   String traceParent,
+                                                   String userCode,
+                                                   ExpenseCategoryReplacementRequestDto replacementRequest) {
+    return null;
   }
 
   @Override

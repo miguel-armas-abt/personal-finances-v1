@@ -1,0 +1,5 @@
+quarkus:
+  mongodb:
+    database: personal_finances_test
+    devservices:
+      enabled: true

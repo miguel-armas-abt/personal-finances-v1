@@ -69,10 +69,6 @@ quarkus:
           use-bean-validation: false
           enable-security-generation: false
 
-  mongodb:
-    connection-string: "mongodb+srv://miguelarmasabt:l21m01j16M01L13@cluster0.t2pidzg.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0&authSource=admin"
-    database: personalManagement
-
   rest-client:
     logging:
       scope: request-response
@@ -87,7 +83,7 @@ quarkus:
         Content-Type: application/json
       params:
         messages:
-          page-size: 50
+          page-size: 200
           fields: 'messages/id,nextPageToken'
         message-content:
           format: full
@@ -112,40 +108,3 @@ configuration:
     expenses:
       search-criteria:
         page-size: 20
-
-      bank-receipts:
-        "BBVA_DEBIT_CARD":
-          from: procesos@bbva.com.pe
-          subject: "Has realizado un consumo con tu tarjeta BBVA"
-
-        "BBVA_PLIN":
-          from: procesos@bbva.com.pe
-          subject: "Constancia de operación transferencia PLIN"
-
-        "BBVA_PLIN_MERCHANT_QR":
-          from: procesos@bbva.com.pe
-          subject: "BBVA - Constancia de pago a comercios con QR"
-
-        "BBVA_SERVICE_PAYMENT":
-          from: procesos@bbva.com.pe
-          subject: "BBVA - Constancia Pago de servicios"
-
-        "IBK_PLIN":
-          from: servicioalcliente@netinterbank.com.pe
-          subject: "Constancia de Pago Plin"
-
-        "BCP_DEBIT_CARD":
-          from: notificaciones@notificacionesbcp.com.pe
-          subject: "Realizaste un consumo con tu Tarjeta de Débito BCP - Servicio de Notificaciones BCP"
-
-  #      "BCP_CREDIT_CARD":
-  #        from: notificaciones@notificacionesbcp.com.pe
-  #        subject: "Realizaste un consumo con tu Tarjeta de Crédito BCP - Servicio de Notificaciones BCP"
-  #
-  #      "BCP_YAPE_SERVICE":
-  #        from: noreply@yape.pe
-  #        subject: "Tu yapeo de servicio ha sido confirmado"
-  #
-  #      "BCP_YAPE":
-  #        from: notificaciones@yape.pe
-  #        subject: "Pago exitoso"

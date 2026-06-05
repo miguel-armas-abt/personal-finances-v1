@@ -1,7 +1,7 @@
 package io.github.miguelarmasabt.expenses.categories.mapper;
 
-import io.github.miguelarmasabt.config.MappingConfig;
 import io.github.miguelarmasabt.commons.enums.Currency;
+import io.github.miguelarmasabt.config.MappingConfig;
 import io.github.miguelarmasabt.expenses.categories.dto.request.ExpenseCategoryRequestDto;
 import io.github.miguelarmasabt.expenses.categories.repository.entity.ExpenseCategoryEntity;
 import io.github.miguelarmasabt.expenses.rest.server.beans.ExpenseCategoryResponse;

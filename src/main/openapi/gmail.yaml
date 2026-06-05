@@ -78,7 +78,7 @@ paths:
         '500':
           $ref: '#/components/responses/InternalServerError'
       security:
-        - bearerAuth: []
+        - bearerAuth: [ ]
 
 components:
   securitySchemes:
@@ -226,7 +226,7 @@ components:
           type: array
           items:
             type: string
-          example: [INBOX, UNREAD]
+          example: [ INBOX, UNREAD ]
         snippet:
           type: string
           example: Pago recibido por S/ 25.00

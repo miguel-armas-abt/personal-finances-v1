@@ -1,10 +1,10 @@
 package io.github.miguelarmasabt.expenses.csv.helper;
 
+import com.univocity.parsers.common.ParsingContext;
+import com.univocity.parsers.common.processor.RowProcessor;
 import io.github.miguelarmasabt.expenses.csv.constants.Csv;
 import io.github.miguelarmasabt.expenses.csv.dto.ExpenseCsvRowDto;
 import io.github.miguelarmasabt.expenses.csv.exceptions.InvalidCsvRowException;
-import com.univocity.parsers.common.ParsingContext;
-import com.univocity.parsers.common.processor.RowProcessor;
 import lombok.Getter;
 
 import java.util.ArrayList;
