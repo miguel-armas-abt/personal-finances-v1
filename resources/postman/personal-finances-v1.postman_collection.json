@@ -639,7 +639,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\r\n    \"currency\": \"PEN\",\r\n    \"categories\": [\r\n        {\r\n            \"name\": \"PAREJA\",\r\n            \"limit\": 100.00,\r\n            \"recipientPatterns\": [\r\n                {\r\n                    \"code\": \"CONTAINS\",\r\n                    \"value\": \"Karla\"\r\n                }\r\n            ]\r\n        },\r\n        {\r\n            \"name\": \"TRANSPORTE\",\r\n            \"limit\": 80.00\r\n        }\r\n    ]\r\n}",
+              "raw": "{\r\n    \"currency\": \"PEN\",\r\n    \"categories\": [\r\n        {\r\n            \"name\": \"PAREJA\",\r\n            \"limit\": 200.00,\r\n            \"recipientPatterns\": [\r\n                {\r\n                    \"code\": \"CONTAINS\",\r\n                    \"value\": \"Karla\"\r\n                }\r\n            ]\r\n        },\r\n        {\r\n            \"name\": \"INSTITUTO\",\r\n            \"limit\": 1200.00,\r\n            \"recipientPatterns\": [\r\n                {\r\n                    \"code\": \"CONTAINS\",\r\n                    \"value\": \"CIBERTEC\"\r\n                }\r\n            ]\r\n        }\r\n    ]\r\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -659,6 +659,73 @@
                 "v1",
                 "expenses",
                 "categories"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "assignCategories",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "trace-parent",
+                "value": "{{traceParent}}",
+                "type": "text"
+              },
+              {
+                "key": "caller-name",
+                "value": "WEB",
+                "type": "text"
+              },
+              {
+                "key": "user-code",
+                "value": "{{userCode}}",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{bearer-token}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"from\": \"2025-03-01T04:12:00.654Z\",\r\n    \"overwriteExistingCategories\": true\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/poc/personal-finances/v1/expenses/categories/assignment",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "poc",
+                "personal-finances",
+                "v1",
+                "expenses",
+                "categories",
+                "assignment"
               ]
             }
           },

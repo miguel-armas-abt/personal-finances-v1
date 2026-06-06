@@ -8,11 +8,14 @@ import io.github.miguelarmasabt.expenses.categories.repository.ExpenseCategoryRe
 import io.github.miguelarmasabt.expenses.categories.repository.entity.ExpenseCategoryEntity;
 import io.github.miguelarmasabt.expenses.categories.service.ExpenseCategoryService;
 import io.github.miguelarmasabt.expenses.crud.repository.ExpenseRepository;
+import io.github.miguelarmasabt.expenses.rest.server.beans.ExpenseCategoryResponse;
 import io.github.miguelarmasabt.expenses.rest.server.beans.ExpenseCategoryResponseDto;
 import io.smallrye.mutiny.Uni;
 import jakarta.enterprise.context.ApplicationScoped;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -29,6 +32,20 @@ public class ExpenseCategoryServiceImpl implements ExpenseCategoryService {
   public Uni<ExpenseCategoryResponseDto> findAllCategories(String userCode) {
     return categoryRepository.findById(userCode)
         .flatMap(entity -> resolveCategoriesWithExcess(userCode, entity));
+  }
+
+  @Override
+  public Uni<List<ExpenseCategoryResponse>> findAllAssignableCategories(String userCode) {
+    return findAllCategories(userCode)
+        .map(categories -> Optional.ofNullable(categories)
+            .map(ExpenseCategoryResponseDto::getCategories)
+            .orElse(List.of())
+            .stream()
+            .filter(Objects::nonNull)
+            .filter(category -> StringUtils.isNotBlank(category.getName()))
+            .filter(category -> Objects.nonNull(category.getRecipientPatterns()))
+            .filter(category -> !category.getRecipientPatterns().isEmpty())
+            .toList());
   }
 
   @Override

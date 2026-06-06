@@ -1,7 +1,9 @@
 package io.github.miguelarmasabt.expenses;
 
 import io.github.miguelarmasabt.commons.dto.params.AppHeaders;
+import io.github.miguelarmasabt.expenses.categories.dto.request.ExpenseCategoryAssignmentRequestDto;
 import io.github.miguelarmasabt.expenses.categories.dto.request.ExpenseCategoryRequestDto;
+import io.github.miguelarmasabt.expenses.categories.service.ExpenseCategoryAssignmentService;
 import io.github.miguelarmasabt.expenses.categories.service.ExpenseCategoryService;
 import io.github.miguelarmasabt.expenses.crud.dto.params.ExpenseQueryParams;
 import io.github.miguelarmasabt.expenses.crud.dto.params.ExpenseSearchParams;
@@ -13,7 +15,6 @@ import io.github.miguelarmasabt.expenses.csv.service.ExportExpenseCsvService;
 import io.github.miguelarmasabt.expenses.csv.service.ImportExpenseCsvService;
 import io.github.miguelarmasabt.expenses.csv.utils.FileNameGenerator;
 import io.github.miguelarmasabt.expenses.rest.server.ExpensesResource;
-import io.github.miguelarmasabt.expenses.rest.server.beans.ExpenseCategoryReplacementRequestDto;
 import io.github.miguelarmasabt.expenses.rest.server.beans.ExpenseCategoryResponseDto;
 import io.github.miguelarmasabt.expenses.rest.server.beans.ExpenseSearchResponseDto;
 import io.github.miguelarmasabt.expenses.sync.service.ExpenseSyncService;
@@ -47,6 +48,7 @@ public class ExpenseRestService implements ExpensesResource {
   private final ExportExpenseCsvService exportExpenseCsvService;
   private final ImportExpenseCsvService importExpenseCsvService;
   private final ExpenseCategoryService categoryService;
+  private final ExpenseCategoryAssignmentService assignmentService;
 
   @Override
   public CompletionStage<ExpenseSearchResponseDto> searchExpenses(String authorization,
@@ -112,12 +114,16 @@ public class ExpenseRestService implements ExpensesResource {
   }
 
   @Override
-  public CompletionStage<Response> applyCategories(String authorization,
+  public CompletionStage<Response> assignCategories(String authorization,
                                                    String callerName,
                                                    String traceParent,
                                                    String userCode,
-                                                   ExpenseCategoryReplacementRequestDto replacementRequest) {
-    return null;
+                                                   ExpenseCategoryAssignmentRequestDto assignmentRequest) {
+    return assignmentService.assignCategories(userCode, assignmentRequest)
+        .map(response -> Objects.isNull(response.getIds()) || response.getIds().isEmpty()
+            ? Response.noContent().build()
+            : Response.ok(response).build())
+        .subscribeAsCompletionStage();
   }
 
   @Override

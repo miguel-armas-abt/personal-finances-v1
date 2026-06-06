@@ -174,43 +174,6 @@ paths:
           $ref: '#/components/responses/UnauthorizedError'
         '500':
           $ref: '#/components/responses/InternalServerError'
-
-  /expenses/apply-categories:
-    post:
-      tags:
-        - Expense
-      summary: Aplicar categorías a los gastos existentes de un usuario.
-      description: |
-        La operación asigna la categoría de los gastos existentes en base de datos para un usuario.
-      operationId: applyCategories
-      x-codegen-async: true
-      parameters:
-        - $ref: '#/components/parameters/AuthorizationHeader'
-        - $ref: '#/components/parameters/CallerNameHeader'
-        - $ref: '#/components/parameters/TraceParentHeader'
-        - $ref: '#/components/parameters/UserCodeHeader'
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ExpenseCategoryReplacementRequestDto'
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ExpenseUpdatedResponseDto'
-              x-codegen-returnType: jakarta.ws.rs.core.Response
-        '204':
-          description: No Content
-        '400':
-          $ref: '#/components/responses/BadRequestError'
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
-
   # /expenses/csv/import:
   #   post:
   #     tags:
@@ -243,7 +206,6 @@ paths:
   #         $ref: '#/components/responses/UnauthorizedError'
   #       '500':
   #         $ref: '#/components/responses/InternalServerError'
-
   /expenses/csv/export:
     get:
       tags:
@@ -331,6 +293,41 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ExpenseCategoryResponseDto'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /expenses/categories/assignment:
+    post:
+      tags:
+        - Expense Category
+      summary: Aplicar categorías a los gastos existentes de un usuario.
+      description: |
+        La operación asigna la categoría de los gastos existentes en base de datos para un usuario.
+      operationId: assignCategories
+      x-codegen-async: true
+      parameters:
+        - $ref: '#/components/parameters/AuthorizationHeader'
+        - $ref: '#/components/parameters/CallerNameHeader'
+        - $ref: '#/components/parameters/TraceParentHeader'
+        - $ref: '#/components/parameters/UserCodeHeader'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExpenseCategoryAssignmentRequestDto'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExpenseUpdatedResponseDto'
+              x-codegen-returnType: jakarta.ws.rs.core.Response
+        '204':
+          description: No Content
         '400':
           $ref: '#/components/responses/BadRequestError'
         '401':
@@ -748,10 +745,10 @@ components:
         source:
           $ref: '#/components/schemas/SourceSchema'
 
-    ExpenseCategoryReplacementRequestDto:
+    ExpenseCategoryAssignmentRequestDto:
       type: object
       required:
-        - expenseDateFrom
+        - from
       properties:
         overwriteExistingCategories:
           type: boolean

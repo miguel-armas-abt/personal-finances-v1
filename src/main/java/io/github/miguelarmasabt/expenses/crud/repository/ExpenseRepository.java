@@ -201,11 +201,6 @@ public class ExpenseRepository implements ReactivePanacheMongoRepository<Expense
         .map(Set::copyOf);
   }
 
-  public Uni<Boolean> existsGmailMessage(String gmailMessageId) {
-    return count(FIELD_GMAIL_MESSAGE_ID, gmailMessageId)
-        .map(count -> count > 0);
-  }
-
   public Uni<Void> updateById(String expenseId, ExpenseEntity expense) {
     return MongoDbUtil.validateAndGetObjectId(expenseId)
         .flatMap(this::findById)

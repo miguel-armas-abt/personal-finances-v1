@@ -46,6 +46,10 @@ quarkus:
               resource: ExpensesResource
               target-class: ${info.group-id}.expenses.categories.dto.request.ExpenseCategoryRequestDto
               parameter-name: data
+            assignCategories:
+              resource: ExpensesResource
+              target-class: ${info.group-id}.expenses.categories.dto.request.ExpenseCategoryAssignmentRequestDto
+              parameter-name: data
 
   openapi-generator:
     codegen:

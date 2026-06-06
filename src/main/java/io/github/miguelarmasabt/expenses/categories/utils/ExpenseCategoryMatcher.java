@@ -37,13 +37,13 @@ public class ExpenseCategoryMatcher {
         .filter(pattern -> Objects.nonNull(pattern.getCode()))
         .filter(pattern -> StringUtils.isNotBlank(pattern.getValue()))
         .filter(pattern -> matches(normalizedRecipient, pattern))
-        .mapToInt(pattern -> CategoryPattern.valueOf(pattern.getCode()).score(pattern.getValue()))
+        .mapToInt(pattern -> CategoryPattern.fromCode(pattern.getCode()).score(pattern.getValue()))
         .max()
         .orElse(-1);
   }
 
   private static boolean matches(String normalizedRecipient, ExpenseCategoryRecipientPatternResponse pattern) {
-    Pattern regex = CategoryPattern.valueOf(pattern.getCode()).toRegex(pattern.getValue());
+    Pattern regex = CategoryPattern.fromCode(pattern.getCode()).toRegex(pattern.getValue());
     return regex.matcher(normalizedRecipient).matches();
   }
 }

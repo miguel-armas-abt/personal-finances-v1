@@ -6,14 +6,13 @@ import io.github.miguelarmasabt.commons.repository.sync.checkpoint.enums.SyncSco
 import io.github.miguelarmasabt.commons.utils.DateUtil;
 import io.github.miguelarmasabt.expenses.bank.receipts.helper.BankReceiptExpenseExtractorDispatcher;
 import io.github.miguelarmasabt.expenses.bank.receipts.helper.GmailQueryBuilder;
-import io.github.miguelarmasabt.expenses.bank.receipts.mapper.ExtractExpenseMapper;
+import io.github.miguelarmasabt.expenses.categories.mapper.ExpenseCategoryAssignmentMapper;
 import io.github.miguelarmasabt.expenses.bank.receipts.repository.BankReceiptTemplateRepository;
 import io.github.miguelarmasabt.expenses.bank.receipts.repository.entity.BankReceiptTemplateEntity;
 import io.github.miguelarmasabt.expenses.bank.receipts.service.ExtractExpenseService;
 import io.github.miguelarmasabt.expenses.categories.service.ExpenseCategoryService;
 import io.github.miguelarmasabt.expenses.crud.repository.ExpenseRepository;
 import io.github.miguelarmasabt.expenses.rest.server.beans.ExpenseCategoryResponse;
-import io.github.miguelarmasabt.expenses.rest.server.beans.ExpenseCategoryResponseDto;
 import io.github.miguelarmasabt.expenses.sync.dto.response.ExtractExpenseResponseDto;
 import io.github.miguelarmasabt.repository.gmail.model.MessageResponseWrapper;
 import io.github.miguelarmasabt.repository.gmail.model.MessageSummary;
@@ -41,34 +40,35 @@ public class ExtractExpenseServiceImpl implements ExtractExpenseService {
   private final GmailRepositoryAdapter gmailRepository;
   private final ExpenseCategoryService categoryService;
   private final ExpenseRepository expenseRepository;
-  private final ExtractExpenseMapper mapper;
+  private final ExpenseCategoryAssignmentMapper categoryAssignmentMapper;
 
   @Override
   public Multi<ExtractExpenseResponseDto> getExtractedExpenses(String userCode) {
     return syncCheckpointRepository.findOrPersist(userCode, SyncScope.EXPENSES)
         .onItem().transformToMulti(syncCheckpoint -> templateRepository.findEnabled()
-            .onItem().transformToMulti(templates -> extractExpenses(userCode, syncCheckpoint.getCheckpointAt(), templates))
+            .onItem().transformToMulti(templates ->
+                (Objects.isNull(templates) || templates.isEmpty())
+                    ? Multi.createFrom().empty()
+                    : extractExpenses(userCode, syncCheckpoint.getCheckpointAt(), templates))
         );
   }
 
   private Multi<ExtractExpenseResponseDto> extractExpenses(String userCode,
                                                            Instant lastCheckpointAt,
                                                            List<BankReceiptTemplateEntity> templates) {
-    if (Objects.isNull(templates) || templates.isEmpty()) {
-      return Multi.createFrom().empty();
-    }
-
     String lastMessageReadAt = DateUtil.toGmailDate(lastCheckpointAt);
     String query = gmailQueryBuilder.buildBankReceiptQueryAfter(templates, lastMessageReadAt);
 
-    return categoryService.findAllCategories(userCode)
-        .onItem().transformToMulti(categoryResponse ->
+    return categoryService.findAllAssignableCategories(userCode)
+        .onItem().transformToMulti(categories ->
             gmailRepository.getMessages(query)
-                .onItem().transform(this::resolveMessages)
+                .onItem().transform(response -> Optional.ofNullable(response)
+                    .map(MessageResponseWrapper::getMessages)
+                    .orElse(List.of()))
                 .flatMap(messages -> filterNotPersistedMessages(userCode, messages))
                 .onItem().transformToMulti(Multi.createFrom()::iterable)
                 .onItem().transformToMulti(message ->
-                    this.extractExpenseFromMessage(message, categoryResponse, templates).toMulti())
+                    this.extractExpenseFromMessage(message, categories, templates).toMulti())
                 .merge(MESSAGE_CONTENT_CONCURRENCY)
                 .select().where(Objects::nonNull)
                 .select().where(expense -> expense.getGmailMessageReceivedAt().isAfter(lastCheckpointAt)));
@@ -103,19 +103,11 @@ public class ExtractExpenseServiceImpl implements ExtractExpenseService {
         });
   }
 
-  private List<MessageSummary> resolveMessages(MessageResponseWrapper response) {
-    return Optional.ofNullable(response)
-        .map(MessageResponseWrapper::getMessages)
-        .orElse(List.of());
-  }
-
   private Uni<ExtractExpenseResponseDto> extractExpenseFromMessage(MessageSummary message,
-                                                                   ExpenseCategoryResponseDto categoryResponse,
+                                                                   List<ExpenseCategoryResponse> categories,
                                                                    List<BankReceiptTemplateEntity> templates) {
-    List<ExpenseCategoryResponse> categories = categoryResponse.getCategories();
-
     return gmailRepository.getMessageContent(message.getId())
         .flatMap(messageContent -> expenseExtractor.toDto(messageContent, templates))
-        .map(expense -> mapper.mapCategory(expense, categories));
+        .map(expense -> categoryAssignmentMapper.assignCategory(expense, categories));
   }
 }
