@@ -40,7 +40,7 @@ public class SyncCheckpointRepository implements ReactivePanacheMongoRepositoryB
     return findByUserCodeAndScope(userCode, scope)
         .onItem().ifNotNull().transformToUni(checkpoint -> Uni.createFrom().item(checkpoint))
         .onItem().ifNull().switchTo(() -> {
-          long lookbackDays = properties.features().expenses().sync().initialCheckpointLookbackDays();
+          long lookbackDays = properties.business().expenses().sync().initialCheckpointLookbackDays();
           SyncCheckpointEntity entity = mapper.toEntity(userCode, scope, Instant.now().minus(Duration.ofDays(lookbackDays)));
           return persist(entity);
         });

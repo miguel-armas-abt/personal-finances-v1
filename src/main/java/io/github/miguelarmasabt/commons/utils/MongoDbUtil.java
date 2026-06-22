@@ -1,6 +1,6 @@
 package io.github.miguelarmasabt.commons.utils;
 
-import io.github.miguelarmasabt.expenses.crud.exceptions.InvalidObjectIdFormatException;
+import io.github.miguelarmasabt.personal.finances.expenses.crud.exceptions.InvalidObjectIdFormatException;
 import io.smallrye.mutiny.Uni;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;

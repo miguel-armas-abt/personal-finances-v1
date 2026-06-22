@@ -1,5 +1,7 @@
 info:
   group-id: io.github.miguelarmasabt
+  commons-package: ${info.group-id}.commons
+  main-package: ${info.group-id}.personal.finances
   rest-client:
     propagate-headers: '@org.eclipse.microprofile.rest.client.annotation.RegisterClientHeaders'
 
@@ -27,7 +29,7 @@ quarkus:
         use: apicurio
         spec: openapi.yaml
         input-base-dir: src/main/resources/META-INF
-        base-package: ${info.group-id}.expenses.rest.server
+        base-package: ${info.main-package}.expenses.rest.server
         use-reactive: false
         use-bean-validation: true
         skip-if-unchanged: false
@@ -36,26 +38,26 @@ quarkus:
           request-bodies:
             saveExpense:
               resource: ExpensesResource
-              target-class: ${info.group-id}.expenses.crud.dto.request.ExpenseSaveRequestDto
+              target-class: ${info.main-package}.expenses.crud.dto.request.ExpenseSaveRequestDto
               parameter-name: data
             updateExpense:
               resource: ExpensesResource
-              target-class: ${info.group-id}.expenses.crud.dto.request.ExpenseUpdateRequestDto
+              target-class: ${info.main-package}.expenses.crud.dto.request.ExpenseUpdateRequestDto
               parameter-name: data
             updateExpenseCategories:
               resource: ExpensesResource
-              target-class: ${info.group-id}.expenses.categories.dto.request.ExpenseCategoryRequestDto
+              target-class: ${info.main-package}.expenses.categories.dto.request.ExpenseCategoryRequestDto
               parameter-name: data
             assignCategories:
               resource: ExpensesResource
-              target-class: ${info.group-id}.expenses.categories.dto.request.ExpenseCategoryAssignmentRequestDto
+              target-class: ${info.main-package}.expenses.categories.dto.request.ExpenseCategoryAssignmentRequestDto
               parameter-name: data
 
   openapi-generator:
     codegen:
       spec:
         gmail_yaml:
-          base-package: ${info.group-id}.repository.gmail
+          base-package: ${info.commons-package}.repository.google
           config-key: gmail
           api-name-suffix: Repository
           mutiny: true
@@ -65,7 +67,7 @@ quarkus:
           additional-api-type-annotations: ${info.rest-client.propagate-headers}
 
         exchange_rate_yaml:
-          base-package: ${info.group-id}.repository.exchange.rate
+          base-package: ${info.commons-package}.repository.exchange.rate
           config-key: exchange-rate
           api-name-suffix: Repository
           mutiny: true
@@ -100,6 +102,22 @@ quarkus:
       headers:
         Content-Type: application/json
 
+mp:
+  jwt:
+    verify:
+      issuer: expense-app
+      publickey:
+        location: publicKey.pem
+
+smallrye:
+  jwt:
+    sign:
+      key:
+        location: privateKey.pem
+    new-token:
+      issuer: ${quarkus.application.name}
+      lifespan: 1800 # 30 minutos
+
 org:
   eclipse:
     microprofile:
@@ -108,7 +126,11 @@ org:
           propagateHeaders: Authorization,trace-parent,caller-name,request-date
 
 configuration:
-  features:
+  google:
+    client-id: ${GOOGLE_CLIENT_ID}
+
+  business:
     expenses:
       search-criteria:
         page-size: 20
+

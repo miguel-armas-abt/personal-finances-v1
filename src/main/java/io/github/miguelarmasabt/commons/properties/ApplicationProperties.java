@@ -1,6 +1,7 @@
 package io.github.miguelarmasabt.commons.properties;
 
-import io.github.miguelarmasabt.commons.properties.features.FeatureProperties;
+import io.github.miguelarmasabt.commons.properties.business.BusinessProperties;
+import io.github.miguelarmasabt.commons.properties.technical.TechnicalProperties;
 import io.github.miguelarmasabt.properties.ConfigurationBaseProperties;
 import io.quarkus.runtime.annotations.StaticInitSafe;
 import io.smallrye.config.ConfigMapping;
@@ -9,5 +10,7 @@ import io.smallrye.config.ConfigMapping;
 @ConfigMapping(prefix = "configuration")
 public interface ApplicationProperties extends ConfigurationBaseProperties {
 
-  FeatureProperties features();
+  BusinessProperties business();
+
+  TechnicalProperties technical();
 }

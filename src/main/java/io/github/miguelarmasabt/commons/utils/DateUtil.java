@@ -1,7 +1,7 @@
 package io.github.miguelarmasabt.commons.utils;
 
 import io.github.miguelarmasabt.commons.constants.Regex;
-import io.github.miguelarmasabt.expenses.crud.exceptions.InvalidDateException;
+import io.github.miguelarmasabt.personal.finances.expenses.crud.exceptions.InvalidDateException;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
