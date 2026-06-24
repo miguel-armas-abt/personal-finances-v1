@@ -4,9 +4,11 @@ import io.smallrye.config.WithDefault;
 
 public interface TechnicalProperties {
 
-  CsvProperties csv();
+  Csv csv();
 
-  interface CsvProperties {
+  Google google();
+
+  interface Csv {
 
     Export exports();
 
@@ -20,6 +22,14 @@ public interface TechnicalProperties {
     interface Export {
       @WithDefault("250")
       Integer rowsPerChunk();
+    }
+  }
+
+  interface Google {
+    OpenId openId();
+
+    interface OpenId {
+      String clientId();
     }
   }
 }

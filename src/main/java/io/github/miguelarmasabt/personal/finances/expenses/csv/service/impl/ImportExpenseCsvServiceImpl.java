@@ -8,7 +8,7 @@ import io.github.miguelarmasabt.personal.finances.expenses.crud.mapper.ExpenseSa
 import io.github.miguelarmasabt.personal.finances.expenses.crud.repository.ExpenseRepository;
 import io.github.miguelarmasabt.personal.finances.expenses.crud.repository.entity.ExpenseEntity;
 import io.github.miguelarmasabt.personal.finances.expenses.csv.dto.ExpenseCsvRowDto;
-import io.github.miguelarmasabt.personal.finances.expenses.csv.exceptions.CsvReadException;
+import io.github.miguelarmasabt.personal.finances.expenses.csv.exceptions.MalformedCsvException;
 import io.github.miguelarmasabt.personal.finances.expenses.csv.helper.ImportExpenseCsvValidator;
 import io.github.miguelarmasabt.personal.finances.expenses.csv.helper.ImportExpenseRowProcessor;
 import io.github.miguelarmasabt.personal.finances.expenses.csv.mapper.ExportExpenseCsvMapper;
@@ -65,7 +65,7 @@ public class ImportExpenseCsvServiceImpl implements ImportExpenseCsvService {
 
       return rowProcessor.getRows();
     } catch (IOException exception) {
-      throw new CsvReadException(exception);
+      throw new MalformedCsvException(exception);
     }
   }
 

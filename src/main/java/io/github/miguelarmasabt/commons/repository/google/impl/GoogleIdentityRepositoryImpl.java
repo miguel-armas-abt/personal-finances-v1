@@ -4,13 +4,14 @@ import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.gson.GsonFactory;
+import io.github.miguelarmasabt.commons.properties.ApplicationProperties;
 import io.github.miguelarmasabt.commons.repository.google.GoogleIdentityRepository;
 import io.smallrye.mutiny.Uni;
 import io.smallrye.mutiny.infrastructure.Infrastructure;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.ws.rs.NotAuthorizedException;
-import org.eclipse.microprofile.config.inject.ConfigProperty;
+import lombok.RequiredArgsConstructor;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
@@ -18,10 +19,10 @@ import java.util.List;
 import java.util.Objects;
 
 @ApplicationScoped
+@RequiredArgsConstructor
 public class GoogleIdentityRepositoryImpl implements GoogleIdentityRepository {
 
-  @ConfigProperty(name = "configuration.google.client-id")
-  String googleClientId;
+  private final ApplicationProperties properties;
 
   private GoogleIdTokenVerifier idTokenVerifier;
 
@@ -30,7 +31,7 @@ public class GoogleIdentityRepositoryImpl implements GoogleIdentityRepository {
     idTokenVerifier = new GoogleIdTokenVerifier.Builder(
         new NetHttpTransport(),
         GsonFactory.getDefaultInstance())
-        .setAudience(List.of(googleClientId))
+        .setAudience(List.of(properties.technical().google().openId().clientId()))
         .build();
   }
 
@@ -46,12 +47,12 @@ public class GoogleIdentityRepositoryImpl implements GoogleIdentityRepository {
       GoogleIdToken token = idTokenVerifier.verify(idToken);
 
       if (Objects.isNull(token)) {
-        throw new NotAuthorizedException("Google ID token inválido");
+        throw new NotAuthorizedException("Invalid Google ID token");
       }
 
       GoogleIdToken.Payload payload = token.getPayload();
 
-      if (!Boolean.TRUE.equals(payload.getEmailVerified())) {
+      if (!payload.getEmailVerified()) {
         throw new NotAuthorizedException("El correo de Google no está verificado");
       }
 

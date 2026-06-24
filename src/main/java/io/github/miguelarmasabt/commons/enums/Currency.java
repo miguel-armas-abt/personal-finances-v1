@@ -2,6 +2,7 @@ package io.github.miguelarmasabt.commons.enums;
 
 import io.github.miguelarmasabt.commons.exceptions.UnsupportedCurrencyCodeException;
 import io.github.miguelarmasabt.commons.exceptions.UnsupportedCurrencySymbolException;
+import io.github.miguelarmasabt.error.exceptions.GenericException;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 

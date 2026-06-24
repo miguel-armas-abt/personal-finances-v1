@@ -2,17 +2,12 @@ package io.github.miguelarmasabt.personal.finances.expenses.bank.receipts.except
 
 import io.github.miguelarmasabt.error.exceptions.GenericException;
 
+import static io.github.miguelarmasabt.commons.constants.Errors.NO_SUCH_HEADER_FROM;
 import static jakarta.ws.rs.core.Response.Status.CONFLICT;
 
 public class NoSuchHeaderFromException extends GenericException {
 
-  public static final String ERROR_CODE = "0015";
-
   public NoSuchHeaderFromException() {
-    super(
-        ERROR_CODE,
-        "No such header: 'From'",
-        CONFLICT
-    );
+    super(NO_SUCH_HEADER_FROM, CONFLICT);
   }
 }

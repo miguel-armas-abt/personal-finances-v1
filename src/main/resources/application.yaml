@@ -126,8 +126,12 @@ org:
           propagateHeaders: Authorization,trace-parent,caller-name,request-date
 
 configuration:
-  google:
-    client-id: ${GOOGLE_CLIENT_ID}
+#  project-type: BACKEND_FOR_FRONTEND
+
+  technical:
+    google:
+      open-id:
+        client-id: '688021661176-ddni3a1g9hb25a5gljrri97asii870r5.apps.googleusercontent.com'
 
   business:
     expenses:

@@ -2,17 +2,12 @@ package io.github.miguelarmasabt.personal.finances.expenses.bank.receipts.except
 
 import io.github.miguelarmasabt.error.exceptions.GenericException;
 
+import static io.github.miguelarmasabt.commons.constants.Errors.UNSUPPORTED_EXTRACT_EXPENSE_STRATEGY;
 import static jakarta.ws.rs.core.Response.Status.INTERNAL_SERVER_ERROR;
 
 public class UnsupportedExtractExpenseStrategyException extends GenericException {
 
-  public static final String ERROR_CODE = "0016";
-
   public UnsupportedExtractExpenseStrategyException(String from, String subject) {
-    super(
-        ERROR_CODE,
-        "Unsupported extract expense strategy: " + from + ", " + subject,
-        INTERNAL_SERVER_ERROR
-    );
+    super(UNSUPPORTED_EXTRACT_EXPENSE_STRATEGY, INTERNAL_SERVER_ERROR, from, subject);
   }
 }
